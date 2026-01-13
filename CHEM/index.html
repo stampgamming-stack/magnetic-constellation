@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Equilibrium Monitor | สมดุลเคมีในสิ่งมีชีวิตและสิ่งแวดล้อม</title>
+    <meta name="description" content="ระบบตรวจสอบสมดุลเคมีในร่างกายและสิ่งแวดล้อม - Interactive Sci-Fi Dashboard">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Kanit:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Main Dashboard Container -->
+    <main class="dashboard">
+
+        <!-- ==================== HERO SECTION ==================== -->
+        <section class="hero-section" id="hero">
+            <div class="hero-content">
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">SYSTEM ACTIVE</span>
+                </div>
+                <h1 class="hero-title">
+                    <span class="title-line">ระบบตรวจสอบสมดุลเคมี</span>
+                    <span class="title-line accent">ในสิ่งมีชีวิตและสิ่งแวดล้อม</span>
+                </h1>
+                <p class="hero-subtitle">Life & Environment Equilibrium Monitor</p>
+                <div class="module-status">
+                    <div class="module-indicator">
+                        <span class="indicator-icon respiratory"></span>
+                        <span>ระบบหายใจ</span>
+                    </div>
+                    <div class="module-indicator">
+                        <span class="indicator-icon skeletal"></span>
+                        <span>ระบบกระดูก</span>
+                    </div>
+                    <div class="module-indicator">
+                        <span class="indicator-icon environment"></span>
+                        <span>สิ่งแวดล้อม</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="icons-3d-container">
+                    <!-- ขวดยา 3D -->
+                    <div class="icon-3d flask-icon">
+                        <div class="flask-body">
+                            <div class="flask-liquid"></div>
+                            <div class="flask-bubbles">
+                                <span class="bubble"></span>
+                                <span class="bubble"></span>
+                                <span class="bubble"></span>
+                            </div>
+                        </div>
+                        <div class="flask-neck"></div>
+                        <span class="icon-label">เคมี</span>
+                    </div>
+                    <!-- หัวใจ 3D -->
+                    <div class="icon-3d heart-icon">
+                        <div class="heart-shape"></div>
+                        <div class="heart-pulse"></div>
+                        <span class="icon-label">สิ่งมีชีวิต</span>
+                    </div>
+                    <!-- ใบไม้ 3D -->
+                    <div class="icon-3d leaf-icon">
+                        <div class="leaf-shape"></div>
+                        <div class="leaf-vein"></div>
+                        <span class="icon-label">สิ่งแวดล้อม</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== RESPIRATORY SYSTEM MODULE ==================== -->
+        <section class="module respiratory-module" id="respiratory">
+            <div class="module-header">
+                <div class="module-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2c-1.5 4-4 6-4 10a4 4 0 0 0 8 0c0-4-2.5-6-4-10z" />
+                        <path d="M8 12h8" />
+                    </svg>
+                </div>
+                <div class="module-title">
+                    <h2>ระบบหมุนเวียนเลือดและการหายใจ</h2>
+                    <span class="module-label">Respiratory System Module</span>
+                </div>
+            </div>
+
+            <div class="module-content">
+                <div class="content-left">
+                    <!-- O2 Saturation Display -->
+                    <div class="data-panel saturation-panel">
+                        <div class="panel-header">
+                            <span class="panel-title">O₂ SATURATION</span>
+                            <span class="panel-value" id="o2-value">98%</span>
+                        </div>
+                        <div class="pulse-graph">
+                            <canvas id="pulse-canvas"></canvas>
+                        </div>
+                        <div class="warning-box" id="hypoxia-warning">
+                            <span class="warning-icon">⚠</span>
+                            <span class="warning-text">คำเตือน: ตรวจพบภาวะขาดออกซิเจน - ร่างกายกำลังสร้าง Hb
+                                เพิ่มขึ้น</span>
+                        </div>
+                    </div>
+
+                    <div class="control-panel">
+                        <h3 class="control-title">จำลองความสูง</h3>
+                        <p class="control-desc">Altitude Simulator - ดูผลกระทบต่อระดับออกซิเจน</p>
+                        <div class="slider-container">
+                            <input type="range" id="altitude-slider" min="0" max="5000" value="0" step="100">
+                            <div class="slider-labels">
+                                <span>0m</span>
+                                <span>2500m</span>
+                                <span>5000m</span>
+                            </div>
+                        </div>
+                        <div class="altitude-display">
+                            <span class="altitude-label">ความสูง:</span>
+                            <span class="altitude-value" id="altitude-value">0 เมตร</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-right">
+                    <!-- Chemical Equations -->
+                    <div class="info-panel">
+                        <h3 class="info-title">กระบวนการแลกเปลี่ยนแก๊ส</h3>
+                        <p class="info-text">เกิดในลักษณะ <strong>สมดุลไดนามิก</strong> ระหว่างฮีโมโกลบินและออกซิเจน</p>
+
+                        <div class="equation-box main-equation">
+                            <span class="equation">Hb + O₂ ⇌ HbO₂</span>
+                            <span class="equation-label">ฮีโมโกลบิน + ออกซิเจน ⇌ ออกซีฮีโมโกลบิน</span>
+                        </div>
+
+                        <div class="equilibrium-explanation">
+                            <div class="eq-item">
+                                <span class="eq-icon lungs">🫁</span>
+                                <div class="eq-content">
+                                    <strong>ที่ปอด:</strong> O₂ สูง → สมดุลเลื่อนไปข้างหน้า
+                                    <span class="eq-result">เกิด HbO₂ มากขึ้น</span>
+                                </div>
+                            </div>
+                            <div class="eq-item">
+                                <span class="eq-icon tissue">🔴</span>
+                                <div class="eq-content">
+                                    <strong>ที่เนื้อเยื่อ:</strong> O₂ ต่ำ → สมดุลเลื่อนย้อนกลับ
+                                    <span class="eq-result">ปล่อย O₂ ให้เซลล์</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hypoxia Info -->
+                    <div class="info-panel hypoxia-info">
+                        <h3 class="info-title">ภาวะไฮพอกเซีย (Hypoxia)</h3>
+                        <p class="info-text">เกิดเมื่อขึ้นที่สูง (ภูเขา) ซึ่งความดัน O₂ ต่ำ</p>
+                        <ul class="symptom-list">
+                            <li><span class="symptom-icon">🤕</span> ปวดศีรษะ</li>
+                            <li><span class="symptom-icon">🤢</span> คลื่นไส้</li>
+                            <li><span class="symptom-icon">😴</span> อ่อนเพลีย</li>
+                        </ul>
+                        <div class="adaptation-box">
+                            <strong>การปรับตัว (หลักเลอชาเตอลิเอ):</strong>
+                            <p>ร่างกายจะสร้างฮีโมโกลบิน (Hb) เพิ่มขึ้น เพื่อจับ O₂ ได้มากขึ้น</p>
+                        </div>
+                    </div>
+
+                    <!-- Acid-Base Balance -->
+                    <div class="info-panel acid-base">
+                        <h3 class="info-title">สมดุลกรด-เบสในเลือด</h3>
+                        <div class="equation-box">
+                            <span class="equation small">C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Energy</span>
+                            <span class="equation-label">การเผาผลาญกลูโคส</span>
+                        </div>
+                        <div class="equation-box">
+                            <span class="equation small">CO₂ + H₂O ⇌ H₂CO₃ ⇌ H⁺ + HCO₃⁻</span>
+                            <span class="equation-label">การเกิดกรดคาร์บอนิก</span>
+                        </div>
+                        <p class="info-text">ถ้า CO₂ มาก เลือดจะเป็นกรด → ร่างกายหายใจออกเร็วขึ้นเพื่อขับ CO₂</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SKELETAL SYSTEM MODULE ==================== -->
+        <section class="module skeletal-module" id="skeletal">
+            <div class="module-header">
+                <div class="module-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" />
+                    </svg>
+                </div>
+                <div class="module-title">
+                    <h2>สมดุลแคลเซียมในร่างกาย</h2>
+                    <span class="module-label">Skeletal System Module</span>
+                </div>
+            </div>
+
+            <div class="module-content">
+                <div class="content-left">
+                    <!-- Bone Density Visual -->
+                    <div class="data-panel bone-panel">
+                        <div class="panel-header">
+                            <span class="panel-title">สแกนความหนาแน่นกระดูก</span>
+                            <span class="panel-value" id="density-status">ปกติ</span>
+                        </div>
+                        <div class="bone-visual">
+                            <div class="bone-image" id="bone-image">
+                                <div class="bone-structure">
+                                    <div class="bone-outer"></div>
+                                    <div class="bone-inner" id="bone-inner"></div>
+                                    <div class="bone-marrow"></div>
+                                </div>
+                            </div>
+                            <div class="density-meter">
+                                <div class="meter-fill" id="density-meter"></div>
+                                <div class="meter-labels">
+                                    <span>พรุน</span>
+                                    <span>ปกติ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Age Slider -->
+                    <div class="control-panel">
+                        <h3 class="control-title">จำลองอายุ</h3>
+                        <p class="control-desc">Age Simulator - ดูการเปลี่ยนแปลงของกระดูก</p>
+                        <div class="slider-container">
+                            <input type="range" id="age-slider" min="20" max="80" value="25" step="1">
+                            <div class="slider-labels">
+                                <span>20 ปี</span>
+                                <span>50 ปี</span>
+                                <span>80 ปี</span>
+                            </div>
+                        </div>
+                        <div class="age-display">
+                            <span class="age-label">อายุ:</span>
+                            <span class="age-value" id="age-value">25 ปี</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-right">
+                    <!-- Calcium Info -->
+                    <div class="info-panel">
+                        <h3 class="info-title">ความสำคัญของแคลเซียม</h3>
+                        <div class="calcium-distribution">
+                            <div class="calcium-stat">
+                                <span class="stat-value">99%</span>
+                                <span class="stat-label">ในกระดูกและฟัน</span>
+                            </div>
+                            <div class="calcium-stat">
+                                <span class="stat-value">1%</span>
+                                <span class="stat-label">ในเลือดและเนื้อเยื่อ</span>
+                            </div>
+                        </div>
+                        <div class="function-list">
+                            <h4>หน้าที่ของแคลเซียม:</h4>
+                            <ul>
+                                <li>🦴 เสริมสร้างกระดูกและฟัน</li>
+                                <li>⚗️ การทำงานของเอนไซม์</li>
+                                <li>💪 การหดตัวของกล้ามเนื้อ</li>
+                                <li>🩸 การแข็งตัวของเลือด</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Equilibrium -->
+                    <div class="info-panel">
+                        <h3 class="info-title">กลไกสมดุลไดนามิก</h3>
+                        <p class="info-text">ร่างกายต้องรักษาระดับแคลเซียมในเลือดให้คงที่</p>
+                        <div class="hormone-control">
+                            <h4>ควบคุมโดย:</h4>
+                            <div class="hormone-list">
+                                <span class="hormone-tag">วิตามิน D</span>
+                                <span class="hormone-tag">พาราทอร์โมน</span>
+                                <span class="hormone-tag">แคลซิโทนิน</span>
+                            </div>
+                        </div>
+                        <div class="equilibrium-box">
+                            <p>ถ้าระดับแคลเซียมในเลือดลดลง → ร่างกายจะ<strong>สลายแคลเซียมจากกระดูก</strong>ออกมา
+                                เพื่อรักษาสมดุลในเลือด</p>
+                        </div>
+                    </div>
+
+                    <!-- Health Issues -->
+                    <div class="info-panel warning-panel" id="osteoporosis-info">
+                        <h3 class="info-title">⚠️ ปัญหาสุขภาพ</h3>
+                        <ul class="health-issues">
+                            <li>
+                                <strong>อายุ 40+ ปี:</strong>
+                                <p>การสูญเสียแคลเซียมเริ่มต้น</p>
+                            </li>
+                            <li>
+                                <strong>หญิงวัยหมดประจำเดือน:</strong>
+                                <p>กระดูกจะพรุนเร็ว เพราะฮอร์โมนเปลี่ยน ร่างกายดึงแคลเซียมจากกระดูกมาใช้มากเกินไป</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ENVIRONMENTAL MODULE ==================== -->
+        <section class="module environment-module" id="environment">
+            <div class="module-header">
+                <div class="module-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path
+                            d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                    </svg>
+                </div>
+                <div class="module-title">
+                    <h2>สมดุลเคมีในสิ่งแวดล้อม</h2>
+                    <span class="module-label">Environmental Sensor Module</span>
+                </div>
+            </div>
+
+            <div class="module-content">
+                <div class="content-left">
+                    <!-- pH Meter -->
+                    <div class="data-panel ph-panel">
+                        <div class="panel-header">
+                            <span class="panel-title">ระดับ pH ของน้ำ</span>
+                            <span class="panel-value" id="ph-value">5.6</span>
+                        </div>
+                        <div class="ph-meter">
+                            <div class="ph-scale">
+                                <div class="ph-indicator" id="ph-indicator"></div>
+                            </div>
+                            <div class="ph-labels">
+                                <span>กรด</span>
+                                <span>เป็นกลาง</span>
+                                <span>เบส</span>
+                            </div>
+                        </div>
+                        <p class="ph-info">น้ำฝนปกติมี pH ≈ 5.6 เนื่องจาก CO₂ ละลายในน้ำ</p>
+                    </div>
+
+                    <!-- Cave Animation -->
+                    <div class="data-panel cave-panel">
+                        <div class="panel-header">
+                            <span class="panel-title">จำลองการเกิดหินงอกหินย้อย</span>
+                        </div>
+                        <div class="cave-visual">
+                            <div class="cave-container">
+                                <div class="stalactite" id="stalactite"></div>
+                                <div class="water-drops">
+                                    <div class="drop drop-1"></div>
+                                    <div class="drop drop-2"></div>
+                                    <div class="drop drop-3"></div>
+                                </div>
+                                <div class="stalagmite" id="stalagmite"></div>
+                            </div>
+                            <div class="formation-label">
+                                <span>หินย้อย (Stalactite)</span>
+                                <span>หินงอก (Stalagmite)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-right">
+                    <!-- Acid Rain -->
+                    <div class="info-panel">
+                        <h3 class="info-title">ปรากฏการณ์เรือนกระจกและฝนกรด</h3>
+                        <p class="info-text">การละลายของ CO₂ ในน้ำฝน/แหล่งน้ำ ทำให้เกิดกรด</p>
+
+                        <div class="equation-box">
+                            <span class="equation">CO₂(g) + H₂O(l) ⇌ H₂CO₃(aq)</span>
+                            <span class="equation-label">การละลาย CO₂ ในน้ำ</span>
+                        </div>
+                        <div class="equation-box">
+                            <span class="equation small">H₂CO₃(aq) + H₂O(l) ⇌ H₃O⁺(aq) + HCO₃⁻(aq)</span>
+                            <span class="equation-label">การแตกตัวของกรดคาร์บอนิก</span>
+                        </div>
+                        <p class="info-result">ทำให้แหล่งน้ำธรรมชาติมีความเป็นกรด</p>
+                    </div>
+
+                    <!-- Limestone Cave -->
+                    <div class="info-panel">
+                        <h3 class="info-title">การเกิดหินงอกหินย้อย</h3>
+                        <p class="info-text">น้ำที่มีความเป็นกรด (H₂CO₃) ไหลผ่านหินปูน (CaCO₃)</p>
+
+                        <div class="process-box">
+                            <div class="process-step">
+                                <span class="step-label">ขาไป (กัดกร่อน):</span>
+                                <div class="equation-box">
+                                    <span class="equation small">CaCO₃(s) + H₂O(l) + CO₂(g) ⇌ Ca²⁺(aq) +
+                                        2HCO₃⁻(aq)</span>
+                                </div>
+                            </div>
+                            <div class="process-arrow">↓</div>
+                            <div class="process-step">
+                                <span class="step-label">ขากลับ (ตกตะกอน เกิดหินงอก):</span>
+                                <p class="step-desc">เมื่อสารละลายหยดลงมาแล้วน้ำ/แก๊สระเหยไป จะเกิดตะกอน CaCO₃ กลับคืนมา
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            <div class="footer-content">
+                <span class="footer-logo">⛗️ CHEM EQUILIBRIUM MONITOR</span>
+                <span class="footer-info">สมดุลเคมีในสิ่งมีชีวิตและสิ่งแวดล้อม</span>
+            </div>
+            <div class="team-credits">
+                <h3 class="credits-title">👥 ผู้จัดทำ</h3>
+                <ul class="credits-list">
+                    <li><span class="member-number">1.</span> นายเอกธวัช พ่วงตระกูล <span class="member-class">ม.5/4
+                            เลขที่
+                            4</span></li>
+                    <li><span class="member-number">2.</span> นายชนวีร์ เกียรตินิติประวัติ <span
+                            class="member-class">ม.5/4
+                            เลขที่ 7</span></li>
+                    <li><span class="member-number">3.</span> นายภูดิศ ปริวิทธางกูร <span class="member-class">ม.5/4
+                            เลขที่
+                            13</span></li>
+                    <li><span class="member-number">4.</span> นางสาวรัตนาภรณ์ สวนพุฒ <span class="member-class">ม.5/4
+                            เลขที่
+                            24</span></li>
+                    <li><span class="member-number">5.</span> นางสาวณัฐธิชา ทาเจริญ <span class="member-class">ม.5/4
+                            เลขที่
+                            25</span></li>
+                </ul>
+            </div>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
