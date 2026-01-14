@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Knight Tour 5×n (n ≤ 21)</title>
+
+    <style>
+        body {
+            background: #111;
+            color: #fff;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: sans-serif;
+        }
+
+        #boardContainer {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #board {
+            display: grid;
+            position: relative;
+        }
+
+        .cell {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .white {
+            background: #eee;
+            color: #000
+        }
+
+        .black {
+            background: #333
+        }
+
+        .start {
+            background: #ffe600 !important;
+            color: #000
+        }
+
+        .blocked {
+            background: #8b0000 !important
+        }
+
+        .current {
+            outline: 3px solid rgba(0, 255, 255, .8);
+            outline-offset: -3px;
+        }
+
+        .illegalFlash {
+            animation: flash .18s ease-in-out 2;
+        }
+
+        @keyframes flash {
+            0% {
+                filter: brightness(1)
+            }
+
+            50% {
+                filter: brightness(2)
+            }
+
+            100% {
+                filter: brightness(1)
+            }
+        }
+
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none
+        }
+
+        #ui {
+            text-align: center;
+            padding-bottom: 20px
+        }
+
+        button,
+        input {
+            margin: 4px
+        }
+
+        .hint {
+            opacity: .85;
+            font-size: 12px;
+            margin-top: 6px;
+            max-width: 760px
+        }
+
+        .modeBox {
+            display: inline-flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            margin: 6px 0
+        }
+
+        .modeTag {
+            font-size: 12px;
+            opacity: .9
+        }
+
+        kbd {
+            background: #222;
+            border: 1px solid #444;
+            border-bottom-width: 2px;
+            padding: 0 6px;
+            border-radius: 6px
+        }
+
+        .hidden {
+            display: none
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="boardContainer">
+        <div id="board"></div>
+    </div>
+
+    <div id="ui">
+        <h3>Knight’s Tour 5 × n (1–21)</h3>
+
+        <div class="modeBox">
+            <label class="modeTag">
+                <input type="checkbox" id="manualToggle">
+                โหมดโยงมือเอง (MANUAL)
+            </label>
+            <span class="modeTag" id="modeLabel">ตอนนี้: AUTO (คำนวณให้)</span>
+        </div>
+
+        <div>
+            n :
+            <input id="cols" type="number" value="7" min="1" max="21"><br>
+
+            จุดเริ่ม (แถว,คอลัมน์):
+            <input id="startInput" placeholder="เช่น 1,1"><br>
+
+            ตัดช่อง (0–2 ช่อง):
+            <input id="blockInput" placeholder="เช่น 2,3 หรือ 2,3;4,5"><br>
+        </div>
+
+        <!-- ปุ่มโหมด AUTO -->
+        <div id="autoControls">
+            <button onclick="runOrSkip()">▶ Run / Skip</button>
+            <button onclick="prev()">◀</button>
+            <button onclick="next()">▶</button>
+            <button onclick="resetAll()">Reset</button>
+            <div class="hint">AUTO: กด Run ให้ระบบหาเส้นทางให้ (สุ่ม/heuristic)</div>
+        </div>
+
+        <!-- ปุ่มโหมด MANUAL -->
+        <div id="manualControls" class="hidden">
+            <button onclick="applySetup()">✓ Apply</button>
+            <button onclick="undo()">↩ Undo</button>
+            <button onclick="resetPath()">Reset Path</button>
+            <button onclick="resetAll()">Reset All</button>
+            <div class="hint">
+                MANUAL: กด <kbd>Apply</kbd> แล้วคลิกเดินม้าเองทีละช่อง (ต้องเป็นมูฟม้าจริง, ห้ามซ้ำ, ห้ามเข้าแดง)
+            </div>
+        </div>
+
+        <div id="info"></div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const R = 5, size = 42;
+        const moves = [[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, 2], [-1, -2]];
+
+        // shared state
+        let start = null, cuts = [], path = [], step = 0, finished = false;
+
+        // manual mode state
+        let manualMode = false;
+        let applied = false; // สำหรับ MANUAL: ต้องกด Apply ก่อนเดิน
+
+        function same(a, b) { return a && b && a[0] === b[0] && a[1] === b[1]; }
+        function inCuts(r, c) { return cuts.some(p => p[0] === r && p[1] === c); }
+        function inPath(r, c) { return path.some(p => p[0] === r && p[1] === c); }
+
+        function parsePoint(s) {
+            if (!s || !s.includes(",")) return null;
+            let [r, c] = s.split(",").map(x => +x.trim() - 1);
+            const C = +cols.value;
+            if (!Number.isFinite(r) || !Number.isFinite(c)) return null;
+            if (r < 0 || r >= R || c < 0 || c >= C) return null;
+            return [r, c];
+        }
+
+        function readCuts() {
+            const arr = [];
+            const v = blockInput.value.trim();
+            if (!v) return arr;
+            v.split(";").forEach(s => {
+                const p = parsePoint(s);
+                if (!p) throw "ช่องตัดไม่ถูกต้อง";
+                arr.push(p);
+            });
+            if (arr.length > 2) throw "ตัดได้ไม่เกิน 2 ช่อง";
+            return arr;
+        }
+
+        function readInputs() {
+            const C = +cols.value;
+            if (C < 1 || C > 21) throw "n ต้องอยู่ระหว่าง 1–21";
+            start = parsePoint(startInput.value);
+            if (!start) throw "จุดเริ่มไม่ถูกต้อง";
+            cuts = readCuts();
+            // ห้ามตัดทับ start
+            cuts = cuts.filter(p => !same(p, start));
+            // sync กลับให้เนียน
+            blockInput.value = cuts.map(p => `${p[0] + 1},${p[1] + 1}`).join(";");
+        }
+
+        function shouldTryCycle(C, cuts) {
+            if (C === 4) {
+                if (cuts.length !== 2) return false;
+                const [a, b] = cuts;
+                const diff = (a[0] + a[1]) % 2 !== (b[0] + b[1]) % 2;
+                const noMid = a[0] !== 2 && b[0] !== 2;
+                return diff && noMid;
+            }
+            if (C >= 5) return C % 2 === 1;
+            return false;
+        }
+
+        function isKnightMove(a, b) {
+            const dr = Math.abs(a[0] - b[0]);
+            const dc = Math.abs(a[1] - b[1]);
+            return (dr === 2 && dc === 1) || (dr === 1 && dc === 2);
+        }
+
+        function isCycle(p) {
+            if (p.length < 2) return false;
+            return isKnightMove(p[0], p[p.length - 1]);
+        }
+
+        function targetCount() {
+            return R * (+cols.value) - cuts.length;
+        }
+
+        /* =========================
+           AUTO mode (เดิม)
+        ========================= */
+
+        function runOrSkip() {
+            if (manualMode) return; // กันหลุดโหมด
+            if (path.length && !finished) {
+                step = path.length - 1;
+                finished = true;
+                drawStep();
+                return;
+            }
+            try { runAuto(); } catch (e) { alert(e); }
+        }
+
+        function runAuto() {
+            readInputs();
+            applied = false; // เผื่อเคยอยู่ manual
+            const C = +cols.value;
+            const tryCycle = shouldTryCycle(C, cuts);
+            const MAX_ROUNDS = tryCycle ? 12000 : 4000;
+            const target = R * C - cuts.length;
+
+            let bestAny = null;
+            let bestCycle = null;
+
+            for (let r = 0; r < MAX_ROUNDS; r++) {
+                const vis = Array.from({ length: R }, () => Array(C).fill(false));
+                cuts.forEach(([x, y]) => vis[x][y] = true);
+
+                let [x, y] = start;
+                const p = [];
+
+                while (true) {
+                    p.push([x, y]);
+                    vis[x][y] = true;
+                    if (p.length === target) break;
+
+                    let opts = [];
+                    for (const [dx, dy] of moves) {
+                        const nx = x + dx, ny = y + dy;
+                        if (nx >= 0 && nx < R && ny >= 0 && ny < C && !vis[nx][ny]) {
+                            let deg = 0;
+                            for (const [dx2, dy2] of moves) {
+                                const x2 = nx + dx2, y2 = ny + dy2;
+                                if (x2 >= 0 && x2 < R && y2 >= 0 && y2 < C && !vis[x2][y2]) deg++;
+                            }
+                            opts.push({ nx, ny, deg });
+                        }
+                    }
+                    if (!opts.length) break;
+
+                    const progress = p.length / target;
+                    opts.sort((a, b) => {
+                        if (a.deg !== b.deg) return a.deg - b.deg;
+                        if (tryCycle && progress > 0.8) {
+                            const da = (a.nx - start[0]) ** 2 + (a.ny - start[1]) ** 2;
+                            const db = (b.nx - start[0]) ** 2 + (b.ny - start[1]) ** 2;
+                            if (da !== db) return da - db;
+                        }
+                        return Math.random() - .5;
+                    });
+
+                    x = opts[0].nx;
+                    y = opts[0].ny;
+                }
+
+                if (!bestAny || p.length > bestAny.length) bestAny = p;
+                if (p.length === target && isCycle(p)) {
+                    bestCycle = p;
+                    break;
+                }
+                if (!tryCycle && p.length === target) {
+                    bestAny = p;
+                    break;
+                }
+            }
+
+            path = (tryCycle && bestCycle) ? bestCycle : (bestAny || []);
+            step = 0;
+            finished = false;
+            drawStep();
+        }
+
+        function next() { if (manualMode) return; if (step < path.length - 1) { step++; drawStep() } }
+        function prev() { if (manualMode) return; if (step > 0) { step--; drawStep() } }
+
+        /* =========================
+           MANUAL mode (เดินเอง)
+        ========================= */
+
+        function applySetup() {
+            if (!manualMode) return;
+            try {
+                readInputs();
+                // เริ่มใหม่
+                path = [start];
+                step = path.length - 1;
+                finished = true;
+                applied = true;
+                drawStep();
+            } catch (e) { alert(e); }
+        }
+
+        function flashCell(r, c) {
+            const idx = r * (+cols.value) + c;
+            const el = board.children[idx];
+            if (!el) return;
+            el.classList.remove("illegalFlash");
+            void el.offsetWidth;
+            el.classList.add("illegalFlash");
+        }
+
+        function onCellClick(r, c) {
+            if (!manualMode) return;        // AUTO ไม่ให้คลิกเดิน
+            if (!applied) { flashCell(r, c); return; }
+            if (inCuts(r, c)) { flashCell(r, c); return; }
+
+            const nextP = [r, c];
+            const last = path[path.length - 1];
+
+            if (inPath(r, c)) { flashCell(r, c); return; }
+            if (!isKnightMove(last, nextP)) { flashCell(r, c); return; }
+
+            path.push(nextP);
+            step = path.length - 1;
+            finished = true;
+            drawStep();
+        }
+
+        function undo() {
+            if (!manualMode || !applied) return;
+            if (path.length <= 1) return;
+            path.pop();
+            step = path.length - 1;
+            finished = true;
+            drawStep();
+        }
+
+        function resetPath() {
+            if (!manualMode || !applied) return;
+            path = [start];
+            step = 0;
+            finished = true;
+            drawStep();
+        }
+
+        /* =========================
+           Drawing
+        ========================= */
+
+        function draw() {
+            const C = +cols.value;
+            board.innerHTML = "";
+            board.style.gridTemplateColumns = `repeat(${C},${size}px)`;
+
+            for (let r = 0; r < R; r++)for (let c = 0; c < C; c++) {
+                const d = document.createElement("div");
+                d.className = "cell " + ((r + c) % 2 ? "black" : "white");
+
+                if (start && start[0] == r && start[1] == c) d.classList.add("start");
+                if (inCuts(r, c)) d.classList.add("blocked");
+
+                // เลขตาม path (manual) หรือ step (auto)
+                const upto = manualMode ? (path.length - 1) : step;
+                for (let i = 0; i <= upto && i < path.length; i++) {
+                    const p = path[i];
+                    if (p[0] == r && p[1] == c) { d.textContent = i + 1; break; }
+                }
+
+                // ไฮไลต์ตัวล่าสุดใน MANUAL
+                if (manualMode && path.length) {
+                    const last = path[path.length - 1];
+                    if (last[0] === r && last[1] === c) d.classList.add("current");
+                }
+
+                d.addEventListener("click", () => onCellClick(r, c));
+                board.appendChild(d);
+            }
+        }
+
+        function drawStep() {
+            draw();
+            const C = +cols.value;
+
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("width", C * size);
+            svg.setAttribute("height", R * size);
+            board.appendChild(svg);
+
+            // เส้นเทา
+            const upto = manualMode ? (path.length - 1) : step;
+            for (let i = 0; i < upto; i++) {
+                const [a, b] = path[i], [c, d] = path[i + 1];
+                const l = document.createElementNS(svg.namespaceURI, "line");
+                l.setAttribute("x1", b * size + size / 2);
+                l.setAttribute("y1", a * size + size / 2);
+                l.setAttribute("x2", d * size + size / 2);
+                l.setAttribute("y2", c * size + size / 2);
+                l.setAttribute("stroke", "rgba(200,200,200,.6)");
+                l.setAttribute("stroke-width", 2);
+                svg.appendChild(l);
+            }
+
+            // เส้นแดง: เฉพาะถ้าเป็น cycle จริง (ตามที่ตกลง)
+            if (path.length && isCycle(path)) {
+                const [sr, sc] = path[0];
+                const [er, ec] = path[path.length - 1];
+                const l = document.createElementNS(svg.namespaceURI, "line");
+                l.setAttribute("x1", ec * size + size / 2);
+                l.setAttribute("y1", er * size + size / 2);
+                l.setAttribute("x2", sc * size + size / 2);
+                l.setAttribute("y2", sr * size + size / 2);
+                l.setAttribute("stroke", "red");
+                l.setAttribute("stroke-width", 3);
+                svg.appendChild(l);
+            }
+
+            // INFO/RESULT
+            const target = targetCount();
+
+            if (manualMode) {
+                info.textContent = applied ? `เดินแล้ว ${path.length}/${target} ช่อง` : `โหมด MANUAL: กด Apply ก่อนเดิน`;
+                if (applied && path.length === target) {
+                    result.textContent = isCycle(path) ? "🟢 ครบทุกช่อง และปิดวงได้" : "🔴 ครบทุกช่อง แต่ไม่ปิดวง";
+                } else {
+                    result.textContent = "";
+                }
+            } else {
+                info.textContent = `Step ${step}/${Math.max(0, path.length - 1)}`;
+                if (path.length && step === path.length - 1) {
+                    // เอาเหลืองออกไปแล้ว: เขียว/แดงพอ
+                    result.textContent = isCycle(path) ? "🟢 ปิดวงได้" : "🔴 ไม่ปิดวง";
+                } else {
+                    result.textContent = "";
+                }
+            }
+        }
+
+        /* =========================
+           Reset / Mode toggle
+        ========================= */
+
+        function resetAll() {
+            start = null; cuts = []; path = []; step = 0; finished = false;
+            applied = false;
+            info.textContent = ""; result.textContent = "";
+            draw();
+        }
+
+        function setMode(isManual) {
+            manualMode = isManual;
+            applied = false;
+            // ไม่ล้าง input ให้มึง แต่ล้าง path เพื่อไม่ให้โหมดปนกัน
+            path = [];
+            step = 0;
+            finished = false;
+
+            autoControls.classList.toggle("hidden", manualMode);
+            manualControls.classList.toggle("hidden", !manualMode);
+            modeLabel.textContent = manualMode ? "ตอนนี้: MANUAL (โยงมือเอง)" : "ตอนนี้: AUTO (คำนวณให้)";
+
+            // วาดใหม่
+            drawStep();
+        }
+
+        manualToggle.addEventListener("change", (e) => setMode(e.target.checked));
+
+        // เปลี่ยน n แล้ว reset path กันหลุดขอบ
+        cols.addEventListener("change", () => {
+            applied = false;
+            path = []; step = 0; finished = false;
+            drawStep();
+        });
+
+        draw();
+    </script>
+</body>
+
+</html>
