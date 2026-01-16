@@ -95,3 +95,77 @@ const observer = new IntersectionObserver((entries) => {
 // Observe all hidden elements
 const hiddenElements = document.querySelectorAll('.hidden');
 hiddenElements.forEach((el) => observer.observe(el));
+
+// ========================================
+// Modal Popup Functionality
+// ========================================
+const modal = document.getElementById('modal');
+const modalImage = document.getElementById('modalImage');
+const modalTitle = document.getElementById('modalTitle');
+const modalDescription = document.getElementById('modalDescription');
+const modalClose = document.getElementById('modalClose');
+
+// Open Modal Function
+function openModal(imageSrc, title, description) {
+    modalImage.src = imageSrc;
+    modalTitle.textContent = title;
+    modalDescription.textContent = description;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+}
+
+// Close Modal Function
+function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+}
+
+// Close button click
+if (modalClose) {
+    modalClose.addEventListener('click', closeModal);
+}
+
+// Close when clicking overlay (outside modal content)
+if (modal) {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+}
+
+// Close with Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Project Cards Click
+document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const img = card.querySelector('.project-image img');
+        const title = card.querySelector('.project-info h3').textContent;
+        const desc = card.querySelector('.project-info p').textContent;
+        openModal(img.src, title, desc);
+    });
+});
+
+// Activity Cards Click
+document.querySelectorAll('.activity-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const img = card.querySelector('.activity-image img');
+        const title = card.querySelector('.activity-info h3').textContent;
+        const desc = card.querySelector('.activity-info p').textContent;
+        openModal(img.src, title, desc);
+    });
+});
+
+// Certificate Cards Click
+document.querySelectorAll('.cert-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const img = card.querySelector('img');
+        const title = card.querySelector('p').textContent;
+        openModal(img.src, title, 'เกียรติบัตร: ' + title);
+    });
+});

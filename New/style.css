@@ -712,8 +712,6 @@ p {
 }
 
 .activity-card {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
     overflow: hidden;
@@ -722,25 +720,42 @@ p {
 
 .activity-card:hover {
     border-color: var(--accent-gold);
-    transform: translateY(-5px);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px rgba(201, 169, 98, 0.12);
+}
+
+.activity-image {
+    overflow: hidden;
 }
 
 .activity-image img {
     width: 100%;
-    height: 100%;
+    height: 250px;
     object-fit: cover;
+    transition: var(--transition);
+}
+
+.activity-card:hover .activity-image img {
+    transform: scale(1.05);
 }
 
 .activity-info {
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    padding: 1.5rem;
 }
 
 .activity-info h3 {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     margin-bottom: 0.5rem;
+    transition: var(--transition-fast);
+}
+
+.activity-card:hover .activity-info h3 {
+    color: var(--accent-gold);
+}
+
+.activity-info p {
+    font-size: 1rem;
+    font-weight: 300;
 }
 
 /* ========================================
@@ -913,4 +928,100 @@ p {
     .circle-4 {
         display: none;
     }
+}
+
+/* ========================================
+   Modal Popup
+   ======================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-accent);
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: translateY(30px) scale(0.95);
+    transition: var(--transition);
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0) scale(1);
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 2.5rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: var(--transition-fast);
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: var(--accent-gold);
+    transform: rotate(90deg);
+}
+
+.modal-image {
+    width: 100%;
+    max-height: 500px;
+    overflow: hidden;
+}
+
+.modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--bg-primary);
+}
+
+.modal-info {
+    padding: 2rem;
+}
+
+.modal-info h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--accent-gold);
+}
+
+.modal-info p {
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: var(--text-secondary);
+}
+
+/* Clickable Cards Cursor */
+.project-card,
+.activity-card,
+.cert-card {
+    cursor: pointer;
 }

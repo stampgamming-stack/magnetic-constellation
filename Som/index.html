@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Knight Tour 5×n (n ≤ 21)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #12122a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-success: #10b981;
+            --cell-white: #e2e8f0;
+            --cell-black: #334155;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.4);
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, #1a0a2e 100%);
+            color: var(--text-primary);
+            margin: 0;
+            min-height: 100vh;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            gap: 20px;
+        }
+
+        h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        #boardContainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        #board {
+            display: grid;
+            position: relative;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .cell {
+            width: var(--cell-size, 42px);
+            height: var(--cell-size, 42px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: calc(var(--cell-size, 42px) * 0.28);
+            font-weight: 600;
+            user-select: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .cell:hover {
+            transform: scale(1.05);
+            z-index: 2;
+        }
+
+        .white {
+            background: var(--cell-white);
+            color: #1e293b;
+        }
+
+        .black {
+            background: var(--cell-black);
+            color: #e2e8f0;
+        }
+
+        .start {
+            background: linear-gradient(135deg, #fcd34d, #f59e0b) !important;
+            color: #1e293b;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+        }
+
+        .blocked {
+            background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+            color: white;
+        }
+
+        .current {
+            outline: 3px solid #22d3ee;
+            outline-offset: -3px;
+            box-shadow: 0 0 16px rgba(34, 211, 238, 0.6);
+        }
+
+        .illegalFlash {
+            animation: flash 0.18s ease-in-out 2;
+        }
+
+        @keyframes flash {
+            0% {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(2);
+            }
+
+            100% {
+                filter: brightness(1);
+            }
+        }
+
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        #ui {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-row label {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            max-width: 140px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+        }
+
+        .toggle-label {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .toggle-label span:first-child {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .toggle-label span:last-child {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 28px;
+            transition: var(--transition);
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .toggle-switch input:checked+.toggle-slider {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .toggle-switch input:checked+.toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Mode Badge */
+        .mode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .mode-badge.auto {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-success);
+        }
+
+        .mode-badge.manual {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-secondary);
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-icon {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            font-size: 1.1rem;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent-success), #059669);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--accent-warning), #d97706);
+            color: white;
+        }
+
+        .hint {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--accent-primary);
+            margin-top: 12px;
+        }
+
+        kbd {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            border-bottom-width: 2px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.85em;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Info & Result */
+        #info {
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            min-height: 24px;
+        }
+
+        #result {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            min-height: 28px;
+        }
+
+        /* Status indicator */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+        }
+
+        /* Toast Notification */
+        #toast-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            gap: 10px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 18px 28px;
+            background: rgba(30, 30, 50, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            max-width: 500px;
+            width: 90%;
+            pointer-events: auto;
+            animation: slideDown 0.3s ease-out;
+            transform-origin: top center;
+        }
+
+        .toast.hiding {
+            animation: slideUp 0.25s ease-in forwards;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+        }
+
+        .toast-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .toast-message {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            font-size: 1.1rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+        }
+
+        .toast-close:hover {
+            opacity: 1;
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--accent-danger);
+        }
+
+        .toast.error .toast-icon {
+            color: var(--accent-danger);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--accent-warning);
+        }
+
+        .toast.warning .toast-icon {
+            color: var(--accent-warning);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--accent-success);
+        }
+
+        .toast.success .toast-icon {
+            color: var(--accent-success);
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .toast.info .toast-icon {
+            color: var(--accent-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+                gap: 16px;
+            }
+
+            h3 {
+                font-size: 1.25rem;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .input-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+
+            .input-row label {
+                font-size: 0.85rem;
+            }
+
+            input[type="number"],
+            input[type="text"] {
+                max-width: 100%;
+            }
+
+            button {
+                padding: 14px 16px;
+            }
+
+            .btn-group {
+                gap: 8px;
+            }
+
+            .hint {
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 24px;
+                gap: 24px;
+            }
+
+            #ui {
+                max-width: 520px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            body {
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-start;
+                gap: 32px;
+                padding: 40px;
+            }
+
+            #boardContainer {
+                position: sticky;
+                top: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+    <!-- Board Section -->
+    <div id="boardContainer">
+        <div id="board"></div>
+    </div>
+
+    <!-- Control Panel -->
+    <div id="ui">
+        <h3>♞ Knight's Tour 5 × n</h3>
+
+        <!-- Mode Toggle Card -->
+        <div class="card">
+            <div class="toggle-container">
+                <div class="toggle-label">
+                    <span>โหมดการเล่น</span>
+                    <span id="modeLabel">AUTO (คำนวณให้)</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="manualToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Settings Card -->
+        <div class="card">
+            <div class="card-title">⚙️ ตั้งค่า</div>
+            <div class="input-group">
+                <div class="input-row">
+                    <label>ขนาด n (1-21)</label>
+                    <input id="cols" type="number" value="11" min="1" max="21">
+                </div>
+                <div class="input-row">
+                    <label>จุดเริ่มต้น (แถว,คอลัมน์)</label>
+                    <input id="startInput" type="text" placeholder="เช่น 1,1" value="3,1">
+                </div>
+                <div class="input-row">
+                    <label>ตัดช่อง (0-2 ช่อง)</label>
+                    <input id="blockInput" type="text" placeholder="เช่น 2,3;4,5" value="3,3">
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTO Controls -->
+        <div id="autoControls" class="card">
+            <div class="card-title">🎮 ควบคุม</div>
+            <div class="btn-group">
+                <button id="runBtn" class="btn-primary" onclick="runOrSkip()">▶ Run / Skip</button>
+                <button class="btn-secondary btn-icon" onclick="prev()">◀</button>
+                <button class="btn-secondary btn-icon" onclick="next()">▶</button>
+                <button class="btn-secondary" onclick="resetAll()">Reset</button>
+            </div>
+            <div class="hint">
+                <strong>AUTO Mode:</strong> ระบบจะคำนวณหาเส้นทางที่ "ครบทุกช่อง" และ "ปิดวงกลับจุดเริ่ม" ให้อัตโนมัติ
+            </div>
+        </div>
+
+        <!-- MANUAL Controls -->
+        <div id="manualControls" class="card hidden">
+            <div class="card-title">🎮 ควบคุม</div>
+            <div class="btn-group">
+                <button class="btn-success" onclick="applySetup()">✓ Apply</button>
+                <button class="btn-secondary" onclick="undo()">↩ Undo</button>
+                <button class="btn-secondary" onclick="resetPath()">Reset Path</button>
+                <button class="btn-warning" onclick="resetAll()">Reset All</button>
+            </div>
+            <div class="hint">
+                <strong>MANUAL Mode:</strong> กด <kbd>Apply</kbd> แล้วคลิกเดินม้าเอง<br>
+                (ต้องเป็นมูฟม้า, ห้ามซ้ำ, ห้ามเข้าช่องแดง)<br>
+                เป้าหมาย: ครบทุกช่อง + ปิดวงกลับ start
+            </div>
+        </div>
+
+        <!-- Status Display -->
+        <div class="card">
+            <div class="status-bar">
+                <div id="info"></div>
+            </div>
+            <div id="result" style="margin-top: 8px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const R = 5;
+        let size = 42;
+        const moves = [[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, 2], [-1, -2]];
+
+        // elements
+        const board = document.getElementById("board");
+        const cols = document.getElementById("cols");
+        const startInput = document.getElementById("startInput");
+        const blockInput = document.getElementById("blockInput");
+        const info = document.getElementById("info");
+        const result = document.getElementById("result");
+        const manualToggle = document.getElementById("manualToggle");
+        const autoControls = document.getElementById("autoControls");
+        const manualControls = document.getElementById("manualControls");
+        const modeLabel = document.getElementById("modeLabel");
+        const runBtn = document.getElementById("runBtn");
+
+        // shared state
+        let start = null, cuts = [], path = [], step = 0, finished = false;
+
+        // manual mode
+        let manualMode = false;
+        let applied = false;
+
+        // Responsive cell size
+        function calculateCellSize() {
+            const C = +cols.value || 11;
+            const maxWidth = window.innerWidth - 64;
+            const maxBoardWidth = Math.min(maxWidth, 900);
+            const calculatedSize = Math.floor(maxBoardWidth / C);
+            return Math.max(28, Math.min(calculatedSize, 48));
+        }
+
+        function updateCellSize() {
+            size = calculateCellSize();
+            document.documentElement.style.setProperty('--cell-size', size + 'px');
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'error') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+
+            toast.innerHTML = `
+                <div class="toast-message">${message}</div>
+                <button class="toast-close" onclick="this.parentElement.classList.add('hiding'); setTimeout(() => this.parentElement.remove(), 250)">✕</button>
+            `;
+
+            container.appendChild(toast);
+
+            // Auto dismiss after 4 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.classList.add('hiding');
+                    setTimeout(() => toast.remove(), 250);
+                }
+            }, 4000);
+        }
+
+        function same(a, b) { return a && b && a[0] === b[0] && a[1] === b[1]; }
+        function inCuts(r, c) { return cuts.some(p => p[0] === r && p[1] === c); }
+        function inPath(r, c) { return path.some(p => p[0] === r && p[1] === c); }
+
+        function parsePoint(s) {
+            if (!s || !s.includes(",")) return null;
+            const C = +cols.value;
+            let [r, c] = s.split(",").map(x => +x.trim() - 1);
+            if (!Number.isFinite(r) || !Number.isFinite(c)) return null;
+            if (r < 0 || r >= R || c < 0 || c >= C) return null;
+            return [r, c];
+        }
+
+        function readCuts() {
+            const arr = [];
+            const v = blockInput.value.trim();
+            if (!v) return arr;
+            v.split(";").forEach(s => {
+                const p = parsePoint(s);
+                if (!p) throw "ช่องตัดไม่ถูกต้อง";
+                arr.push(p);
+            });
+            if (arr.length > 2) throw "ตัดได้ไม่เกิน 2 ช่อง";
+            return arr;
+        }
+
+        function readInputs() {
+            const C = +cols.value;
+            if (C < 1 || C > 21) throw "n ต้องอยู่ระหว่าง 1–21";
+            start = parsePoint(startInput.value);
+            if (!start) throw "จุดเริ่มไม่ถูกต้อง";
+            cuts = readCuts();
+            cuts = cuts.filter(p => !same(p, start));
+            blockInput.value = cuts.map(p => `${p[0] + 1},${p[1] + 1}`).join(";");
+        }
+
+        function isKnightMove(a, b) {
+            const dr = Math.abs(a[0] - b[0]);
+            const dc = Math.abs(a[1] - b[1]);
+            return (dr === 2 && dc === 1) || (dr === 1 && dc === 2);
+        }
+
+        function isCycle(p) {
+            if (p.length < 2) return false;
+            return isKnightMove(p[0], p[p.length - 1]);
+        }
+
+        function targetCount() {
+            return R * (+cols.value) - cuts.length;
+        }
+
+        /* ========================= FAST AUTO SOLVER (cycle only) ========================= */
+
+        function rngFactory(seed) {
+            let t = (seed >>> 0) || 1;
+            return () => ((t = (t * 1664525 + 1013904223) >>> 0) / 4294967296);
+        }
+
+        function buildCutsSet(C) {
+            const set = new Set();
+            for (const [r, c] of cuts) set.add(r * C + c);
+            return set;
+        }
+
+        function colorOf(id, C) {
+            const r = Math.floor(id / C), c = id % C;
+            return (r + c) & 1;
+        }
+
+        function feasibleCycle(C, startId, cutsSet) {
+            const N = R * C;
+            const target = N - cutsSet.size;
+
+            if (target % 2 === 1) return { ok: false, why: "target เป็นคี่ → ปิดวงไม่ได้" };
+
+            let w = 0, b = 0;
+            for (let id = 0; id < N; id++) {
+                if (cutsSet.has(id)) continue;
+                (colorOf(id, C) === 0) ? w++ : b++;
+            }
+            if (w !== b) return { ok: false, why: `สีขาว/ดำ ไม่เท่ากัน (${w}/${b}) → ปิดวงไม่ได้` };
+
+            if (cutsSet.has(startId)) return { ok: false, why: "start ถูกตัด (กันไว้)" };
+
+            return { ok: true, target };
+        }
+
+        function buildNeighbors(C, cutsSet) {
+            const N = R * C;
+            const neigh = Array.from({ length: N }, () => []);
+            for (let r = 0; r < R; r++) {
+                for (let c = 0; c < C; c++) {
+                    const id = r * C + c;
+                    if (cutsSet.has(id)) continue;
+                    for (const [dr, dc] of moves) {
+                        const rr = r + dr, cc = c + dc;
+                        if (rr < 0 || rr >= R || cc < 0 || cc >= C) continue;
+                        const nid = rr * C + cc;
+                        if (cutsSet.has(nid)) continue;
+                        neigh[id].push(nid);
+                    }
+                }
+            }
+            return neigh;
+        }
+
+        // BigInt visited bitmask
+        function bitHas(mask, i) { return ((mask >> BigInt(i)) & 1n) === 1n; }
+        function bitSet(mask, i) { return mask | (1n << BigInt(i)); }
+        function bitClr(mask, i) { return mask & ~(1n << BigInt(i)); }
+
+        function degree(maskVisited, list) {
+            let d = 0;
+            for (let k = 0; k < list.length; k++) {
+                const nid = list[k];
+                if (!bitHas(maskVisited, nid)) d++;
+            }
+            return d;
+        }
+
+        function buildCandidates(maskVisited, neigh, cur, rnd) {
+            const list = neigh[cur];
+            const cand = [];
+            for (let i = 0; i < list.length; i++) {
+                const nid = list[i];
+                if (bitHas(maskVisited, nid)) continue;
+                const m2 = bitSet(maskVisited, nid);
+                const deg = degree(m2, neigh[nid]);
+                cand.push({ nid, deg, tie: rnd() });
+            }
+            cand.sort((a, b) => a.deg !== b.deg ? a.deg - b.deg : a.tie - b.tie);
+            return cand;
+        }
+
+        function deadEndExists(maskVisited, neigh) {
+            for (let id = 0; id < neigh.length; id++) {
+                if (bitHas(maskVisited, id)) continue;
+                if (degree(maskVisited, neigh[id]) === 0) return true;
+            }
+            return false;
+        }
+
+        function solveCycleFast(C, startId, cutsSet, neigh, seed) {
+            const N = R * C;
+            const target = N - cutsSet.size;
+
+            let mask = 0n;
+            for (const id of cutsSet) mask = bitSet(mask, id);
+            if (bitHas(mask, startId)) return null;
+            mask = bitSet(mask, startId);
+
+            if (target > 1 && neigh[startId].length < 2) return null;
+
+            const rnd = rngFactory(seed);
+
+            const tour = new Array(target);
+            tour[0] = startId;
+
+            const frames = [];
+            let depth = 1;
+            let cur = startId;
+
+            let expanded = 0;
+            const MAX_EXPAND = 900000;
+
+            while (true) {
+                if (expanded++ > MAX_EXPAND) return null;
+
+                if (depth === target) {
+                    const last = tour[target - 1];
+                    const nl = neigh[last];
+                    for (let i = 0; i < nl.length; i++) {
+                        if (nl[i] === startId) return tour.slice();
+                    }
+                }
+
+                if (frames.length < depth) {
+                    frames.push({ cand: buildCandidates(mask, neigh, cur, rnd), idx: 0 });
+                }
+
+                const f = frames[depth - 1];
+                if (f.idx >= f.cand.length) {
+                    frames.pop();
+                    if (depth === 1) return null;
+
+                    const rem = tour[depth - 1];
+                    mask = bitClr(mask, rem);
+                    depth--;
+                    cur = tour[depth - 1];
+                    if (frames.length >= depth) frames[depth - 1].idx++;
+                    continue;
+                }
+
+                const nextId = f.cand[f.idx].nid;
+                tour[depth] = nextId;
+                mask = bitSet(mask, nextId);
+                cur = nextId;
+                depth++;
+
+                if (depth % 6 === 0) {
+                    if (deadEndExists(mask, neigh)) {
+                        const rem = tour[depth - 1];
+                        mask = bitClr(mask, rem);
+                        depth--;
+                        cur = tour[depth - 1];
+                        if (frames.length >= depth) frames[depth - 1].idx++;
+                    }
+                }
+            }
+        }
+
+        /* ========================= AUTO UI logic ========================= */
+
+        function runOrSkip() {
+            if (manualMode) return;
+
+            if (path.length && !finished && step < path.length - 1) {
+                step = path.length - 1;
+                finished = true;
+                drawStep();
+                return;
+            }
+
+            try { runAuto(); } catch (e) { showToast(e, 'error'); }
+        }
+
+        function runAuto() {
+            readInputs();
+            applied = false;
+
+            const C = +cols.value;
+            const startId = start[0] * C + start[1];
+            const cutsSet = buildCutsSet(C);
+
+            const feas = feasibleCycle(C, startId, cutsSet);
+            if (!feas.ok) {
+                path = [];
+                step = 0;
+                finished = false;
+                drawStep();
+                showToast('เคสนี้เป็นไปไม่ได้: ' + feas.why, 'warning');
+                return;
+            }
+
+            const neigh = buildNeighbors(C, cutsSet);
+            if (feas.target > 1 && neigh[startId].length < 2) {
+                path = [];
+                step = 0;
+                finished = false;
+                drawStep();
+                showToast('เคสนี้เป็นไปไม่ได้: จุดเริ่มต้นมีทางออกน้อยกว่า 2 ทาง', 'warning');
+                return;
+            }
+
+            const base = C * 100000 + (start[0] + 1) * 997 + (start[1] + 1) * 131 + cuts.length * 99991;
+            const MAX_RESTART = 3200;
+            let sol = null;
+
+            info.textContent = "กำลังหาเส้นทาง (cycle)...";
+            result.textContent = "";
+            runBtn.disabled = true;
+
+            setTimeout(() => {
+                for (let k = 0; k < MAX_RESTART; k++) {
+                    sol = solveCycleFast(C, startId, cutsSet, neigh, base + k * 17);
+                    if (sol && sol.length === feas.target) break;
+                    sol = null;
+                }
+
+                runBtn.disabled = false;
+
+                if (!sol) {
+                    path = [];
+                    step = 0;
+                    finished = false;
+                    drawStep();
+                    info.textContent = "";
+                    showToast('หา cycle ไม่เจอ ลองเปลี่ยนจุดเริ่มหรือช่องที่ตัด', 'warning');
+                    return;
+                }
+
+                path = sol.map(id => [Math.floor(id / C), id % C]);
+                step = 0;
+                finished = false;
+                drawStep();
+                info.textContent = "";
+            }, 10);
+        }
+
+        function next() { if (manualMode) return; if (step < path.length - 1) { step++; drawStep(); } }
+        function prev() { if (manualMode) return; if (step > 0) { step--; drawStep(); } }
+
+        /* ========================= MANUAL mode ========================= */
+
+        function applySetup() {
+            if (!manualMode) return;
+            try {
+                readInputs();
+                path = [start];
+                step = path.length - 1;
+                finished = true;
+                applied = true;
+                drawStep();
+            } catch (e) { showToast(e, 'error'); }
+        }
+
+        function flashCell(r, c) {
+            const idx = r * (+cols.value) + c;
+            const el = board.children[idx];
+            if (!el) return;
+            el.classList.remove("illegalFlash");
+            void el.offsetWidth;
+            el.classList.add("illegalFlash");
+        }
+
+        function onCellClick(r, c) {
+            if (!manualMode) return;
+            if (!applied) { flashCell(r, c); return; }
+            if (inCuts(r, c)) { flashCell(r, c); return; }
+            if (inPath(r, c)) { flashCell(r, c); return; }
+
+            const last = path[path.length - 1];
+            const nextP = [r, c];
+            if (!isKnightMove(last, nextP)) { flashCell(r, c); return; }
+
+            path.push(nextP);
+            step = path.length - 1;
+            finished = true;
+            drawStep();
+        }
+
+        function undo() {
+            if (!manualMode || !applied) return;
+            if (path.length <= 1) return;
+            path.pop();
+            step = path.length - 1;
+            finished = true;
+            drawStep();
+        }
+
+        function resetPath() {
+            if (!manualMode || !applied) return;
+            path = [start];
+            step = 0;
+            finished = true;
+            drawStep();
+        }
+
+        /* ========================= Drawing ========================= */
+
+        function draw() {
+            updateCellSize();
+            const C = +cols.value;
+            board.innerHTML = "";
+            board.style.gridTemplateColumns = `repeat(${C},${size}px)`;
+
+            for (let r = 0; r < R; r++) {
+                for (let c = 0; c < C; c++) {
+                    const d = document.createElement("div");
+                    d.className = "cell " + ((r + c) % 2 ? "black" : "white");
+
+                    if (start && start[0] == r && start[1] == c) d.classList.add("start");
+                    if (inCuts(r, c)) d.classList.add("blocked");
+
+                    const upto = manualMode ? (path.length - 1) : step;
+                    for (let i = 0; i <= upto && i < path.length; i++) {
+                        const p = path[i];
+                        if (p[0] == r && p[1] == c) { d.textContent = i + 1; break; }
+                    }
+
+                    if (manualMode && path.length) {
+                        const last = path[path.length - 1];
+                        if (last[0] === r && last[1] === c) d.classList.add("current");
+                    }
+
+                    d.addEventListener("click", () => onCellClick(r, c));
+                    board.appendChild(d);
+                }
+            }
+        }
+
+        function drawStep() {
+            draw();
+            const C = +cols.value;
+
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("width", C * size);
+            svg.setAttribute("height", R * size);
+            board.appendChild(svg);
+
+            const upto = manualMode ? (path.length - 1) : step;
+
+            // grey lines
+            for (let i = 0; i < upto; i++) {
+                const [a, b] = path[i], [c, d] = path[i + 1];
+                const l = document.createElementNS(svg.namespaceURI, "line");
+                l.setAttribute("x1", b * size + size / 2);
+                l.setAttribute("y1", a * size + size / 2);
+                l.setAttribute("x2", d * size + size / 2);
+                l.setAttribute("y2", c * size + size / 2);
+                l.setAttribute("stroke", "rgba(200,200,200,.6)");
+                l.setAttribute("stroke-width", 2);
+                svg.appendChild(l);
+            }
+
+            const target = targetCount();
+            const shownCount = manualMode ? path.length : Math.min(step + 1, path.length);
+            const done = path.length && (shownCount === target);
+
+            // red closing edge when complete cycle
+            if (done && isCycle(path)) {
+                const [sr, sc] = path[0];
+                const [er, ec] = path[path.length - 1];
+                const l = document.createElementNS(svg.namespaceURI, "line");
+                l.setAttribute("x1", ec * size + size / 2);
+                l.setAttribute("y1", er * size + size / 2);
+                l.setAttribute("x2", sc * size + size / 2);
+                l.setAttribute("y2", sr * size + size / 2);
+                l.setAttribute("stroke", "#ef4444");
+                l.setAttribute("stroke-width", 3);
+                svg.appendChild(l);
+            }
+
+            // info/result
+            if (manualMode) {
+                info.textContent = applied ? `เดินแล้ว ${path.length}/${target} ช่อง` : "กด Apply เพื่อเริ่มเดิน";
+                if (applied && path.length === target) {
+                    result.textContent = isCycle(path) ? "🟢 ครบทุกช่อง และปิดวงได้!" : "🔴 ครบแต่ไม่ปิดวง";
+                } else {
+                    result.textContent = "";
+                }
+            } else {
+                info.textContent = path.length
+                    ? `Step ${step + 1}/${path.length} | เดิน ${shownCount}/${target} ช่อง`
+                    : `กด Run เพื่อเริ่มหาเส้นทาง`;
+
+                if (path.length && step === path.length - 1) {
+                    finished = true;
+                    if (path.length === target) {
+                        result.textContent = isCycle(path) ? "🟢 ครบทุกช่อง และปิดวงได้!" : "🔴 ครบแต่ไม่ปิดวง";
+                    } else {
+                        result.textContent = `🟡 ได้ ${path.length}/${target} ช่อง (ไม่ครบ)`;
+                    }
+                } else {
+                    finished = false;
+                    result.textContent = "";
+                }
+            }
+        }
+
+        /* ========================= Reset / Mode toggle ========================= */
+
+        function resetAll() {
+            start = null; cuts = []; path = []; step = 0; finished = false;
+            applied = false;
+            info.textContent = ""; result.textContent = "";
+            draw();
+        }
+
+        function setMode(isManual) {
+            manualMode = isManual;
+            applied = false;
+            path = [];
+            step = 0;
+            finished = false;
+
+            autoControls.classList.toggle("hidden", manualMode);
+            manualControls.classList.toggle("hidden", !manualMode);
+            modeLabel.textContent = manualMode ? "MANUAL (เดินเอง)" : "AUTO (คำนวณให้)";
+
+            drawStep();
+        }
+
+        manualToggle.addEventListener("change", (e) => setMode(e.target.checked));
+
+        cols.addEventListener("change", () => {
+            applied = false;
+            path = [];
+            step = 0;
+            finished = false;
+            updateCellSize();
+            drawStep();
+        });
+
+        window.addEventListener("resize", () => {
+            updateCellSize();
+            if (path.length > 0) {
+                drawStep();
+            } else {
+                draw();
+            }
+        });
+
+        // init
+        updateCellSize();
+        draw();
+    </script>
+</body>
+
+</html>
