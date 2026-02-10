@@ -1017,6 +1017,41 @@ p {
     font-size: 1.1rem;
     line-height: 1.9;
     color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* Modal Link Button */
+.modal-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    background: transparent;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: var(--transition);
+    margin-top: 1rem;
+}
+
+.modal-link:hover {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+}
+
+.modal-link .arrow {
+    transition: var(--transition-fast);
+}
+
+.modal-link:hover .arrow {
+    transform: translateX(5px);
+}
+
+.modal-link.hidden {
+    display: none;
 }
 
 /* Clickable Cards Cursor */

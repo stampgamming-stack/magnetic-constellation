@@ -104,12 +104,22 @@ const modalImage = document.getElementById('modalImage');
 const modalTitle = document.getElementById('modalTitle');
 const modalDescription = document.getElementById('modalDescription');
 const modalClose = document.getElementById('modalClose');
+const modalLink = document.getElementById('modalLink');
 
 // Open Modal Function
-function openModal(imageSrc, title, description) {
+function openModal(imageSrc, title, description, link = null) {
     modalImage.src = imageSrc;
     modalTitle.textContent = title;
     modalDescription.textContent = description;
+
+    // Show/hide link button based on whether link exists
+    if (link && modalLink) {
+        modalLink.href = link;
+        modalLink.classList.remove('hidden');
+    } else if (modalLink) {
+        modalLink.classList.add('hidden');
+    }
+
     modal.classList.add('active');
     document.body.style.overflow = 'hidden'; // Prevent scrolling
 }
@@ -147,7 +157,8 @@ document.querySelectorAll('.project-card').forEach(card => {
         const img = card.querySelector('.project-image img');
         const title = card.querySelector('.project-info h3').textContent;
         const desc = card.querySelector('.project-info p').textContent;
-        openModal(img.src, title, desc);
+        const link = card.dataset.link || null; // Get link from data attribute
+        openModal(img.src, title, desc, link);
     });
 });
 
@@ -157,7 +168,8 @@ document.querySelectorAll('.activity-card').forEach(card => {
         const img = card.querySelector('.activity-image img');
         const title = card.querySelector('.activity-info h3').textContent;
         const desc = card.querySelector('.activity-info p').textContent;
-        openModal(img.src, title, desc);
+        const link = card.dataset.link || null; // Get link from data attribute
+        openModal(img.src, title, desc, link);
     });
 });
 
