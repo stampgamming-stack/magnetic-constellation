@@ -37,8 +37,30 @@ if (cursorFollower) {
 const circles = document.querySelectorAll('.circle');
 const lines = document.querySelectorAll('.line');
 
+// Navbar scroll effect & Back to Top button
+const navbar = document.querySelector('.navbar');
+const backToTopBtn = document.getElementById('backToTop');
+
 window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
+
+    // Navbar background on scroll
+    if (navbar) {
+        if (scrollY > 100) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+
+    // Back to Top button visibility
+    if (backToTopBtn) {
+        if (scrollY > 500) {
+            backToTopBtn.classList.add('visible');
+        } else {
+            backToTopBtn.classList.remove('visible');
+        }
+    }
 
     // Move circles with different speeds
     circles.forEach((circle, index) => {
@@ -57,6 +79,13 @@ window.addEventListener('scroll', () => {
         }
     });
 });
+
+// Back to Top click handler
+if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
 
 // Mouse Move Parallax for Geometric Elements
 document.addEventListener('mousemove', (e) => {

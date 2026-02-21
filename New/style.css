@@ -194,6 +194,13 @@ p {
     padding: 0 5%;
     height: var(--nav-height);
     background: linear-gradient(180deg, var(--bg-primary), transparent);
+    transition: var(--transition);
+}
+
+.navbar.scrolled {
+    background: rgba(10, 10, 15, 0.95);
+    border-bottom: 1px solid var(--border-subtle);
+    backdrop-filter: blur(10px);
 }
 
 .logo {
@@ -698,6 +705,31 @@ p {
     color: var(--accent-gold);
 }
 
+/* Card Click Hint */
+.project-info::before,
+.activity-info::before {
+    content: 'คลิกเพื่อดูรายละเอียด';
+    display: block;
+    padding: 0.5rem 0;
+    color: var(--accent-gold);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    border-bottom: 1px solid var(--border-accent);
+    margin-bottom: 0.8rem;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: var(--transition-fast);
+}
+
+.project-card:hover .project-info::before,
+.activity-card:hover .activity-info::before {
+    opacity: 1;
+    max-height: 50px;
+}
+
 /* ========================================
    Activities Section
    ======================================== */
@@ -850,6 +882,42 @@ p {
 }
 
 /* ========================================
+   Back to Top Button
+   ======================================== */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 46px;
+    height: 46px;
+    background: rgba(18, 18, 26, 0.9);
+    border: 1px solid var(--border-accent);
+    color: var(--accent-gold);
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: var(--transition);
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    transform: translateY(-3px);
+}
+
+/* ========================================
    Animations
    ======================================== */
 .hidden {
@@ -876,9 +944,7 @@ p {
         grid-template-columns: 1fr;
     }
 
-    .activity-card {
-        grid-template-columns: 1fr;
-    }
+
 
     .cert-grid {
         grid-template-columns: repeat(2, 1fr);
