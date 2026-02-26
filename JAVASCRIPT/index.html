@@ -1,493 +1,321 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="เรียนรู้ JavaScript แบบ Interactive - แพลตฟอร์มเรียนรู้ JavaScript ภาษาไทย">
-    <title>JS Master - เรียน JavaScript แบบสนุก</title>
-
-    <!-- Google Fonts -->
+    <meta name="description" content="JSMaster - เรียน JavaScript ครบทุกหัวข้อ ภาษาไทย">
+    <title>JSMaster - เรียน JavaScript</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Fira+Code:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <!-- ========================================
-         LOGIN SCREEN
-         ======================================== -->
-    <section class="login-screen" id="loginScreen">
-        <div class="login-bg">
-            <div class="floating-shapes">
-                <div class="shape shape-1"></div>
-                <div class="shape shape-2"></div>
-                <div class="shape shape-3"></div>
-                <div class="shape shape-4"></div>
-                <div class="shape shape-5"></div>
-            </div>
-            <div class="gradient-orb orb-1"></div>
-            <div class="gradient-orb orb-2"></div>
+
+    <!-- ===== LOGIN ===== -->
+    <section class="screen login-screen" id="loginScreen">
+        <div class="ambient-bg">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
         </div>
-
-        <div class="login-container">
-            <div class="login-card">
-                <div class="login-header">
-                    <span class="login-icon">⚡</span>
-                    <h1>JS Master</h1>
-                    <p>เข้าสู่ระบบเพื่อบันทึกความก้าวหน้าของคุณ</p>
-                </div>
-
-                <form class="login-form" id="loginForm">
-                    <div class="form-group">
-                        <label for="usernameInput">ชื่อบัญชี</label>
-                        <input type="text" id="usernameInput" placeholder="กรอกชื่อของคุณ..." autocomplete="off"
-                            minlength="2" maxlength="20" required>
-                        <span class="input-hint">ใช้ชื่อเดิมเพื่อเรียนต่อจากที่ค้างไว้</span>
+        <!-- Floating Code Symbols -->
+        <div class="floating-symbols">
+            <span class="float-sym s1">const</span>
+            <span class="float-sym s2">{ }</span>
+            <span class="float-sym s3">=&gt;</span>
+            <span class="float-sym s4">let</span>
+            <span class="float-sym s5">//</span>
+            <span class="float-sym s6">( )</span>
+            <span class="float-sym s7">===</span>
+            <span class="float-sym s8">function</span>
+            <span class="float-sym s9">return</span>
+            <span class="float-sym s10">[]</span>
+        </div>
+        <!-- Floating Particles -->
+        <div class="particles">
+            <div class="particle p1"></div>
+            <div class="particle p2"></div>
+            <div class="particle p3"></div>
+            <div class="particle p4"></div>
+            <div class="particle p5"></div>
+            <div class="particle p6"></div>
+            <div class="particle p7"></div>
+            <div class="particle p8"></div>
+        </div>
+        <div class="login-card">
+            <div class="login-top-right">
+                <div class="theme-toggle" id="themeToggle">
+                    <span class="theme-icon sun">☀️</span>
+                    <div class="toggle-track">
+                        <div class="toggle-thumb"></div>
                     </div>
-
-                    <button type="submit" class="login-btn">
-                        <span>เข้าสู่ระบบ</span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </button>
-                </form>
-
-                <div class="existing-accounts" id="existingAccounts">
-                    <p class="accounts-label">หรือเลือกบัญชีที่มีอยู่:</p>
-                    <div class="accounts-list" id="accountsList"></div>
+                    <span class="theme-icon moon">🌙</span>
                 </div>
+            </div>
+            <div class="login-brand">
+                <span class="brand-icon">⚡</span>
+                <h1>JSMaster</h1>
+                <p class="brand-sub">เรียน JavaScript ให้เก่ง</p>
+            </div>
+            <form id="loginForm" autocomplete="off">
+                <input type="text" id="usernameInput" placeholder="ชื่อของคุณ..." minlength="2" maxlength="20" required>
+                <button type="submit" class="btn btn-primary">เข้าสู่ระบบ →</button>
+            </form>
+            <div class="saved-accounts" id="savedAccounts">
+                <p class="saved-label">บัญชีที่บันทึกไว้</p>
+                <div id="accountsList"></div>
             </div>
         </div>
     </section>
 
-    <!-- ========================================
-         HERO LANDING PAGE
-         ======================================== -->
-    <section class="hero" id="hero">
-        <!-- Animated Background -->
-        <div class="hero-bg">
-            <div class="floating-shapes">
-                <div class="shape shape-1"></div>
-                <div class="shape shape-2"></div>
-                <div class="shape shape-3"></div>
-                <div class="shape shape-4"></div>
-                <div class="shape shape-5"></div>
-            </div>
-            <div class="code-rain" id="codeRain"></div>
-            <div class="gradient-orb orb-1"></div>
-            <div class="gradient-orb orb-2"></div>
-            <div class="gradient-orb orb-3"></div>
+    <!-- ===== HERO ===== -->
+    <section class="screen hero-screen" id="heroScreen" style="display:none;">
+        <div class="ambient-bg">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
         </div>
-
-        <!-- User Info Bar -->
-        <div class="user-bar" id="userBar">
-            <div class="user-info">
-                <span class="user-avatar">👤</span>
-                <span class="user-name" id="displayUserName">ผู้ใช้</span>
-            </div>
-            <button class="logout-btn" id="logoutBtn" title="ออกจากระบบ">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-                <span>ออก</span>
-            </button>
-        </div>
-
-        <!-- Hero Content -->
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="badge-icon">⚡</span>
-                <span>แพลตฟอร์มเรียนรู้ของ STAXP</span>
-            </div>
-
-            <h1 class="hero-title">
-                <span class="title-line">เรียนรู้</span>
-                <span class="title-highlight">JavaScript</span>
-                <span class="title-line">แบบพื้นฐาน</span>
-            </h1>
-
-            <p class="hero-description">
-                เขียนโค้ดจริง รันได้ทันที พร้อมคำอธิบายภาษาไทยที่เข้าใจง่าย<br>
-                ไม่ต้องติดตั้งอะไร เริ่มเรียนได้เลยตอนนี้!
-            </p>
-
-            <!-- Feature Pills -->
-            <div class="feature-pills">
-                <div class="pill">
-                    <span class="pill-icon">🎯</span>
-                    <span>โจทย์ตรวจสอบ</span>
-                </div>
-                <div class="pill">
-                    <span class="pill-icon">💻</span>
-                    <span>ฝึกเขียนโค้ดจริง</span>
-                </div>
-                <div class="pill">
-                    <span class="pill-icon">🔥</span>
-                    <span>ระบบ Streak</span>
-                </div>
-                <div class="pill">
-                    <span class="pill-icon">🇹🇭</span>
-                    <span>ภาษาไทย 100%</span>
-                </div>
-            </div>
-
-            <!-- CTA Buttons -->
-            <div class="hero-cta">
-                <button class="btn-primary" id="startLearning">
-                    <span>เริ่มเรียนเลย</span>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                </button>
-                <button class="btn-secondary" id="continueBtn" style="display: none;">
-                    <span>เรียนต่อจากที่ค้างไว้</span>
-                </button>
-            </div>
-
-            <!-- Stats -->
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-value">4</span>
-                    <span class="stat-label">หมวดหมู่</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-value">8</span>
-                    <span class="stat-label">บทเรียน</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-value">Free</span>
-                    <span class="stat-label">ฟรีตลอดชีพ</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Interactive Code Demo -->
-        <div class="hero-demo">
-            <div class="demo-window">
-                <div class="demo-header">
-                    <div class="demo-dots">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
+        <nav class="hero-nav">
+            <span class="nav-brand">⚡ JSMaster</span>
+            <div class="nav-right">
+                <div class="streak-chip" id="heroStreak"><span id="heroStreakFire">🔥</span> <span
+                        id="heroStreakNum">0</span> วัน</div>
+                <span class="nav-user" id="heroUser">User</span>
+                <div class="theme-toggle" id="heroThemeToggle">
+                    <span class="theme-icon sun">☀️</span>
+                    <div class="toggle-track">
+                        <div class="toggle-thumb"></div>
                     </div>
-                    <span class="demo-title">script.js</span>
+                    <span class="theme-icon moon">🌙</span>
                 </div>
-                <div class="demo-code" id="demoCode">
-                    <pre><code><span class="keyword">const</span> <span class="variable">message</span> = <span class="string">"สวัสดี JavaScript!"</span>;
+                <button class="btn-ghost" id="heroLogout">→ ออก</button>
+            </div>
+        </nav>
+        <div class="hero-body">
+            <div class="hero-content">
+                <!-- Left: Text -->
+                <div class="hero-left">
+                    <div class="hero-tag">⚡ แพลตฟอร์มเรียนรู้ของ STAXP</div>
+                    <h1 class="hero-title">เรียนรู้<br><span class="gradient-text">JavaScript</span><br>แบบพื้นฐาน</h1>
+                    <p class="hero-sub">เขียนโค้ดจริง รันได้ทันที
+                        พร้อมคำอธิบายภาษาไทยที่เข้าใจง่าย<br>ไม่ต้องติดตั้งอะไร เริ่มเรียนได้เลยตอนนี้!</p>
+                    <div class="hero-chips">
+                        <span class="chip">📝 โจทย์ที่ท้าทาย</span>
+                        <span class="chip">💻 ฝึกเขียนโค้ดจริง</span>
+                        <span class="chip">🔥 ระบบ Streak</span>
+                    </div>
+                    <div class="chip chip-th">🇹🇭 ภาษาไทย 100%</div>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary btn-lg" id="startBtn">เริ่มเรียนเลย →</button>
+                        <button class="btn btn-outline btn-lg" id="continueBtn"
+                            style="display:none;">เรียนต่อจากที่ค้างไว้</button>
+                    </div>
+                </div>
+                <!-- Right: Code Preview -->
+                <div class="hero-right">
+                    <div class="code-preview-card">
+                        <div class="code-preview-bar">
+                            <div class="preview-dots">
+                                <span class="dot dot-r"></span>
+                                <span class="dot dot-y"></span>
+                                <span class="dot dot-g"></span>
+                            </div>
+                            <span class="preview-filename">script.js</span>
+                        </div>
+                        <pre class="code-preview-body"><code><span class="kw">const</span> message = <span class="str">"สวัสดี JavaScript!"</span>;
 
-<span class="keyword">function</span> <span class="function">greet</span>(<span class="param">name</span>) {
-    <span class="keyword">return</span> <span class="string">`ยินดีต้อนรับ ${</span><span class="variable">name</span><span class="string">}!`</span>;
+<span class="kw">function</span> <span class="fn">greet</span>(name) {
+    <span class="kw">return</span> <span class="str">`ยินดีต้อนรับ ${name}!`</span>;
 }
 
-<span class="builtin">console</span>.<span class="method">log</span>(<span class="function">greet</span>(<span class="string">"คุณ"</span>));
-<span class="comment">// Output: ยินดีต้อนรับ!</span></code></pre>
+<span class="fn">console.log</span>(<span class="fn">greet</span>(<span class="str">"คุณ"</span>));
+<span class="cm">// output: ยินดีต้อนรับ คุณ!</span></code></pre>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Scroll Indicator -->
-        <div class="scroll-indicator">
-            <div class="mouse">
-                <div class="wheel"></div>
+            <!-- Stats -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-num" id="statCats">3</span>
+                    <span class="stat-label">หมวดหมู่</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-num" id="statLessons">28</span>
+                    <span class="stat-label">บทเรียน</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-num stat-free">Free</span>
+                    <span class="stat-label">พร้อมเรียนฟรี</span>
+                </div>
             </div>
-            <span>เลื่อนลงเพื่อดูเพิ่มเติม</span>
+            <!-- Scroll hint -->
+            <div class="scroll-hint">
+                <div class="scroll-mouse">
+                    <div class="scroll-dot"></div>
+                </div>
+                <span>เลื่อนเพื่อดูเพิ่มเติม</span>
+            </div>
         </div>
     </section>
 
-    <!-- ========================================
-         LEARNING PLATFORM
-         ======================================== -->
-    <div class="platform" id="platform">
-
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <div class="header-left">
-                    <!-- Hamburger Menu -->
-                    <button class="menu-btn" id="menuBtn" title="เปิดเมนู">
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                    </button>
-
-                    <div class="brand">
-                        <span class="brand-icon">⚡</span>
-                        <h1 class="brand-name">JS Master</h1>
+    <!-- ===== COURSE OUTLINE ===== -->
+    <section class="screen course-screen" id="courseScreen" style="display:none;">
+        <nav class="app-nav">
+            <button class="btn-icon" id="backToHero" title="กลับหน้าแรก">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+            </button>
+            <span class="nav-brand">⚡ JSMaster</span>
+            <div class="nav-right">
+                <div class="streak-chip" id="courseStreak"><span id="courseStreakFire">🔥</span> <span
+                        id="courseStreakNum">0</span></div>
+                <span class="nav-user" id="courseUser">User</span>
+                <div class="theme-toggle" id="courseThemeToggle">
+                    <span class="theme-icon sun">☀️</span>
+                    <div class="toggle-track">
+                        <div class="toggle-thumb"></div>
                     </div>
-                </div>
-
-                <div class="header-center">
-                    <button class="back-home-btn" id="backToHome">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                        </svg>
-                        <span>หน้าแรก</span>
-                    </button>
-                </div>
-
-                <div class="header-right">
-                    <!-- User Display -->
-                    <div class="header-user" id="headerUser">
-                        <span class="user-avatar-small">👤</span>
-                        <span class="header-user-name" id="headerUserName">ผู้ใช้</span>
-                    </div>
-
-                    <!-- Streak Fire -->
-                    <div class="streak-container" id="streakContainer">
-                        <div class="streak-fire">
-                            <div class="fire-icon" id="fireIcon">
-                                <div class="fire-inner"></div>
-                                <div class="fire-glow"></div>
-                            </div>
-                            <span class="streak-count" id="streakCount">0</span>
-                        </div>
-                        <div class="streak-tooltip" id="streakTooltip">
-                            <p class="tooltip-title">🔥 Streak ของคุณ</p>
-                            <p class="tooltip-desc" id="tooltipDesc">เรียนทุกวันเพื่อเพิ่ม Streak!</p>
-                        </div>
-                    </div>
+                    <span class="theme-icon moon">🌙</span>
                 </div>
             </div>
-        </header>
-
-        <div class="main-container">
-
-            <!-- Sidebar - Course Categories -->
-            <aside class="sidebar" id="sidebar">
+        </nav>
+        <div class="course-layout">
+            <!-- Sidebar -->
+            <aside class="course-sidebar" id="courseSidebar">
                 <div class="sidebar-header">
-                    <h2>📚 หมวดหมู่เรียนรู้</h2>
-                    <button class="close-sidebar-btn" id="closeSidebar">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
+                    <h2>📚 เนื้อหาทั้งหมด</h2>
                 </div>
-
-                <nav class="course-nav">
-                    <div id="courseCategories"></div>
-                </nav>
-
-                <div class="sidebar-footer">
-                    <div class="streak-info">
-                        <div class="fire-icon small">
-                            <div class="fire-inner"></div>
-                        </div>
-                        <div class="streak-text">
-                            <span class="streak-label">วัน Streak</span>
-                            <span class="streak-value" id="sidebarStreak">0</span>
-                        </div>
-                    </div>
+                <div class="sidebar-list" id="sidebarList">
+                    <!-- Generated by JS -->
                 </div>
             </aside>
-
-            <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-            <!-- Main Content - Centered -->
-            <main class="content" id="content">
-                <div class="content-wrapper">
-
-                    <!-- Current Course Badge -->
-                    <div class="course-badge" id="courseBadge">
-                        <span class="course-icon">📘</span>
-                        <span class="course-name" id="courseName">JavaScript พื้นฐาน</span>
+            <!-- Main -->
+            <main class="course-main" id="courseMain">
+                <div class="course-intro" id="courseIntro">
+                    <h1>ยินดีต้อนรับสู่ <span class="gradient-text">JSMaster</span></h1>
+                    <p>เลือกหัวข้อจากเมนูด้านซ้ายเพื่อเริ่มเรียน หรือกดปุ่มด้านล่าง</p>
+                    <div class="intro-cards" id="introCards">
+                        <!-- Generated by JS -->
                     </div>
-
-                    <div class="lesson-header">
-                        <span class="lesson-badge" id="lessonBadge">บทที่ 1</span>
-                        <h2 class="lesson-title" id="lessonTitle">กำลังโหลด...</h2>
-                    </div>
-
-                    <!-- Lesson Content -->
-                    <article class="lesson-content" id="lessonContent"></article>
-
-                    <!-- Example Code Display (Read-only) -->
-                    <section class="example-code-section" id="exampleSection">
-                        <div class="example-header">
-                            <span class="example-title">📖 ตัวอย่างโค้ด</span>
-                            <button class="copy-example-btn" id="copyExampleBtn" title="คัดลอกตัวอย่าง">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                </svg>
-                                คัดลอก
-                            </button>
-                        </div>
-                        <div class="example-code">
-                            <pre><code id="exampleCodeContent"></code></pre>
-                        </div>
-                    </section>
-
-                    <!-- Challenge Section -->
-                    <section class="challenge-section" id="challengeSection">
-                        <div class="challenge-header">
-                            <span class="challenge-title">🎯 โจทย์ที่ต้องทำ</span>
-                        </div>
-                        <div class="challenge-body">
-                            <p class="challenge-instruction" id="challengeInstruction"></p>
-                            <div class="challenge-status" id="challengeStatus"></div>
-                            <div class="hint-area">
-                                <button class="hint-btn" id="hintBtn">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                                    </svg>
-                                    ดูคำใบ้
-                                </button>
-                                <div class="hint-content" id="hintContent"></div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Practice Code Editor -->
-                    <section class="code-editor-section">
-                        <div class="editor-header">
-                            <div class="editor-tabs">
-                                <button class="tab active">
-                                    <span class="tab-icon">✏️</span>
-                                    ลองเขียนเอง
-                                </button>
-                            </div>
-                            <div class="editor-actions">
-                                <button class="action-btn" id="resetCodeBtn" title="ล้างโค้ด">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                                        <path d="M3 3v5h5" />
-                                    </svg>
-                                    ล้าง
-                                </button>
-                                <button class="action-btn copy" id="copyBtn" title="คัดลอกโค้ด">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2">
-                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                    </svg>
-                                    คัดลอก
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="editor-container">
-                            <div class="line-numbers" id="lineNumbers"></div>
-                            <textarea class="code-input" id="codeInput" spellcheck="false"
-                                placeholder="// เขียนโค้ดที่นี่ตามโจทย์ด้านบน...&#10;// แล้วกดปุ่ม 'รันโค้ด' เพื่อตรวจสอบ!"></textarea>
-                        </div>
-
-                        <div class="run-section">
-                            <button class="run-btn" id="runBtn">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                                </svg>
-                                <span>รันโค้ด</span>
-                            </button>
-                            <span class="shortcut-hint">หรือกด Ctrl + Enter</span>
-                        </div>
-
-                        <!-- Output Console -->
-                        <div class="output-section">
-                            <div class="output-header">
-                                <span class="output-title">📺 ผลลัพธ์ (Console)</span>
-                                <button class="clear-btn" id="clearOutput" title="ล้างผลลัพธ์">ล้าง</button>
-                            </div>
-                            <div class="output-console" id="outputConsole">
-                                <div class="output-placeholder">คลิก "รันโค้ด" เพื่อดูผลลัพธ์...</div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Navigation Buttons -->
-                    <div class="lesson-navigation">
-                        <button class="nav-btn btn-prev" id="prevBtn">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="19" y1="12" x2="5" y2="12"></line>
-                                <polyline points="12 19 5 12 12 5"></polyline>
-                            </svg>
-                            <span>บทก่อนหน้า</span>
-                        </button>
-
-                        <button class="nav-btn btn-next" id="nextBtn" disabled>
-                            <span>บทถัดไป</span>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                <polyline points="12 5 19 12 12 19"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- Completion Message -->
-                    <div class="completion-message" id="completionMessage">
-                        <div class="completion-content">
-                            <div class="trophy">🏆</div>
-                            <h3>ยินดีด้วย! 🎉</h3>
-                            <p>คุณเรียนจบหมวดหมู่นี้แล้ว!<br>ลองเรียนหมวดหมู่อื่นต่อไปได้เลย!</p>
-                            <div class="completion-actions">
-                                <button class="btn-primary" id="nextCategoryBtn">
-                                    หมวดหมู่ถัดไป
-                                </button>
-                                <button class="btn-secondary" id="restartBtn">
-                                    เรียนใหม่อีกครั้ง
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </main>
         </div>
+    </section>
 
-        <!-- Mobile Bottom Navigation -->
-        <nav class="mobile-bottom-nav" id="mobileNav">
-            <button class="mobile-nav-btn" id="mobilePrevBtn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                <span>ก่อนหน้า</span>
-            </button>
-            <button class="mobile-nav-btn menu" id="mobileMenuBtn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-                <span>หัวข้อ</span>
-            </button>
-            <button class="mobile-nav-btn primary" id="mobileNextBtn" disabled>
-                <span>ถัดไป</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
+    <!-- ===== LESSON VIEWER ===== -->
+    <section class="screen lesson-screen" id="lessonScreen" style="display:none;">
+        <nav class="app-nav">
+            <button class="btn-icon" id="backToCourse" title="กลับหน้ารวม">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6" />
                 </svg>
             </button>
+            <span class="nav-brand lesson-nav-title" id="lessonNavTitle">บทเรียน</span>
+            <div class="nav-right">
+                <div class="streak-chip" id="lessonStreak"><span id="lessonStreakFire">🔥</span> <span
+                        id="lessonStreakNum">0</span></div>
+                <div class="theme-toggle" id="lessonThemeToggle">
+                    <span class="theme-icon sun">☀️</span>
+                    <div class="toggle-track">
+                        <div class="toggle-thumb"></div>
+                    </div>
+                    <span class="theme-icon moon">🌙</span>
+                </div>
+            </div>
         </nav>
+        <div class="lesson-layout">
+            <!-- Guide Panel (scrollable) -->
+            <div class="lesson-guide" id="lessonGuide">
+                <!-- STEP 1: LEARN -->
+                <div class="step-section" id="stepLearn">
+                    <div class="step-header step-learn">
+                        <span class="step-tag tag-learn">STEP 1</span>
+                        <h3>📖 LEARN — เรียนรู้</h3>
+                    </div>
+                    <div class="step-body" id="learnBody"></div>
+                </div>
+                <!-- STEP 2: SEE -->
+                <div class="step-section" id="stepSee">
+                    <div class="step-header step-see">
+                        <span class="step-tag tag-see">STEP 2</span>
+                        <h3>👀 SEE — ดูตัวอย่าง</h3>
+                    </div>
+                    <div class="step-body" id="seeBody"></div>
+                </div>
+                <!-- STEP 3: DO -->
+                <div class="step-section" id="stepDo">
+                    <div class="step-header step-do">
+                        <span class="step-tag tag-do">STEP 3</span>
+                        <h3>✍️ DO — ลองทำ</h3>
+                    </div>
+                    <div class="step-body" id="doBody"></div>
+                    <!-- Editor -->
+                    <div class="editor-section">
+                        <div class="editor-bar">
+                            <span class="editor-file">📄 script.js</span>
+                            <div class="editor-actions">
+                                <button class="btn-sm" id="hintBtn">💡 คำใบ้</button>
+                                <button class="btn-sm" id="resetBtn">🔄 ล้าง</button>
+                            </div>
+                        </div>
+                        <div class="hint-box" id="hintBox" style="display:none;"></div>
+                        <div class="editor-wrap">
+                            <div class="line-nums" id="lineNums"></div>
+                            <textarea class="code-editor" id="codeEditor" spellcheck="false"
+                                placeholder="// เขียนโค้ดของคุณที่นี่..."></textarea>
+                        </div>
+                        <div class="editor-footer">
+                            <button class="btn btn-run" id="runBtn">▶ รันโค้ด</button>
+                            <span class="shortcut-hint">Ctrl+Enter</span>
+                            <div class="result-msg" id="resultMsg"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Console Output -->
+                <div class="console-section" id="consoleSection">
+                    <div class="console-header">
+                        <span>🖥️ Console Output</span>
+                        <button class="btn-sm" id="clearConsole">ล้าง</button>
+                    </div>
+                    <div class="console-body" id="consoleBody"></div>
+                </div>
+                <!-- Nav -->
+                <div class="lesson-nav-bottom">
+                    <button class="btn btn-outline" id="prevLesson" disabled>← ก่อนหน้า</button>
+                    <button class="btn btn-primary" id="nextLesson" disabled>ถัดไป →</button>
+                </div>
+            </div>
+            <!-- Arena Panel (fixed) -->
+            <div class="lesson-arena" id="lessonArena">
+                <div class="arena-header">
+                    <span class="arena-tag">🎯 ARENA</span>
+                    <span class="arena-title" id="arenaTitle">Playground</span>
+                </div>
+                <div class="arena-body" id="arenaBody">
+                    <div class="arena-empty">
+                        <span>🏟️</span>
+                        <p>Arena สำหรับบทที่มีการฝึก DOM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== LEVEL COMPLETE MODAL ===== -->
+    <div class="modal-bg" id="completeModal" style="display:none;">
+        <div class="modal-box">
+            <div class="modal-trophy">🏆</div>
+            <h2>ยอดเยี่ยม!</h2>
+            <p id="completeMsg">คุณผ่านบทนี้แล้ว!</p>
+            <button class="btn btn-primary" id="completeNext">ไปบทถัดไป →</button>
+        </div>
     </div>
 
-    <!-- Course Data Files -->
-    <script src="courses-part1.js"></script>
-    <script src="courses-part2.js"></script>
-    <script src="courses-part3.js"></script>
-
-    <!-- Main Application -->
+    <script src="lessons.js"></script>
     <script src="script.js"></script>
 </body>
 
