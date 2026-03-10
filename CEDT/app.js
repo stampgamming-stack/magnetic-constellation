@@ -535,3 +535,32 @@ function confirmLeave() {
 function cancelLeave() {
     document.getElementById('back-modal').classList.remove('show');
 }
+
+// ===== THEME TOGGLE =====
+function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const newTheme = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('slide2quiz-theme', newTheme);
+    updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('theme-icon');
+    if (icon) {
+        icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+}
+
+// Apply saved theme on load
+(function initTheme() {
+    const saved = localStorage.getItem('slide2quiz-theme');
+    if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+        updateThemeIcon(saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        updateThemeIcon('dark');
+    }
+})();
