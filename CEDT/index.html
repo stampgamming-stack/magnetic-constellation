@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide2Quiz AI — เปลี่ยนสไลด์เป็นเกม Quiz</title>
+    <meta name="description" content="Slide2Quiz AI: แอป AI ที่เปลี่ยนสไลด์เรียนให้เป็นเกม Quiz สุดมันส์">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Decorative Background -->
+    <div class="bg-dots"></div>
+    <div class="bg-float-shape shape-1"></div>
+    <div class="bg-float-shape shape-2"></div>
+    <div class="bg-float-shape shape-3"></div>
+    <div class="bg-float-shape shape-4"></div>
+
+    <!-- ===== SCREEN 1: PROMPT BUILDER ===== -->
+    <div id="screen-landing" class="screen active">
+        <div class="logo-icon">📚</div>
+        <h1 class="app-title">Slide2Quiz <span>AI</span></h1>
+        <p class="app-subtitle">เปลี่ยนชีทเรียนที่น่าเบื่อ<br>ให้เป็นเกมควิซสุดมันส์ 🚀</p>
+
+        <div class="section-divider"></div>
+
+        <!-- Prompt Builder Card -->
+        <div class="prompt-card">
+            <!-- 👔 Role -->
+            <div class="field-group">
+                <label class="field-label" for="input-role">
+                    <span class="field-emoji">👔</span> AI จะเป็นผู้เชี่ยวชาญด้าน
+                </label>
+                <input type="text" id="input-role" class="field-input"
+                    placeholder="เช่น ครูสอนภาษาอังกฤษ, อาจารย์ฟิสิกส์, ผู้เชี่ยวชาญประวัติศาสตร์...">
+            </div>
+
+            <!-- 🎯 Topic + Image Upload -->
+            <div class="field-group">
+                <label class="field-label" for="input-topic">
+                    <span class="field-emoji">🎯</span> เนื้อหา / หัวข้อที่ต้องการ
+                </label>
+                <textarea id="input-topic" class="field-textarea" rows="3"
+                    placeholder="อธิบายเนื้อหาที่ต้องการสร้าง Quiz เช่น Present Perfect Tense, กฎของนิวตัน, สงครามโลกครั้งที่ 2..."></textarea>
+
+                <div class="image-upload-area" id="image-upload-area"
+                    onclick="document.getElementById('image-input').click()">
+                    <input type="file" id="image-input" accept="image/*" style="display:none"
+                        onchange="handleImageUpload(event)">
+                    <div class="image-upload-content" id="image-upload-content">
+                        <span class="image-upload-icon">�️</span>
+                        <span class="image-upload-text">แนบรูปสไลด์ / เนื้อหา (ไม่บังคับ)</span>
+                        <span class="image-upload-hint">กดเพื่ออัปโหลดรูปภาพ</span>
+                    </div>
+                    <div class="image-preview-container" id="image-preview-container" style="display:none">
+                        <img id="image-preview" class="image-preview" src="" alt="preview">
+                        <button class="image-remove-btn" onclick="removeImage(event)">✕ ลบรูป</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 👦 Level -->
+            <div class="field-group">
+                <label class="field-label" for="input-level">
+                    <span class="field-emoji">👦</span> ระดับชั้น
+                </label>
+                <div class="level-row">
+                    <select id="input-level" class="field-select" onchange="handleLevelChange()">
+                        <option value="">— เลือกระดับ —</option>
+                        <option value="ม.1">มัธยมปีที่ 1</option>
+                        <option value="ม.2">มัธยมปีที่ 2</option>
+                        <option value="ม.3">มัธยมปีที่ 3</option>
+                        <option value="ม.4">มัธยมปีที่ 4</option>
+                        <option value="ม.5">มัธยมปีที่ 5</option>
+                        <option value="ม.6">มัธยมปีที่ 6</option>
+                        <option value="ปี 1">มหาวิทยาลัยปี 1</option>
+                        <option value="ปี 2">มหาวิทยาลัยปี 2</option>
+                        <option value="ปี 3">มหาวิทยาลัยปี 3</option>
+                        <option value="ปี 4">มหาวิทยาลัยปี 4</option>
+                        <option value="custom">อื่นๆ (กำหนดเอง)</option>
+                    </select>
+                    <input type="text" id="input-level-custom" class="field-input level-custom-input"
+                        placeholder="ระบุระดับชั้น..." style="display:none">
+                </div>
+            </div>
+
+            <!-- 🏁 Focus / Weakness -->
+            <div class="field-group">
+                <label class="field-label" for="input-focus">
+                    <span class="field-emoji">🏁</span> จุดที่ไม่เข้าใจ / อยากเน้น
+                    <span class="field-optional">(ไม่บังคับ)</span>
+                </label>
+                <textarea id="input-focus" class="field-textarea" rows="2"
+                    placeholder="เช่น ไม่เข้าใจว่าเมื่อไหร่ใช้ has/have, สับสนเรื่อง passive voice..."></textarea>
+            </div>
+        </div>
+
+        <!-- Generate Button -->
+        <button id="btn-generate" class="btn-primary btn-generate" onclick="handleGenerate()">
+            🤖 ให้ AI สร้าง Quiz!
+        </button>
+
+        <!-- Error Message -->
+        <div class="error-box" id="error-box" style="display:none">
+            <span class="error-icon">⚠️</span>
+            <span class="error-text" id="error-text"></span>
+            <button class="error-retry-btn" onclick="handleGenerate()">ลองใหม่</button>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading-container" class="loading-container">
+            <div class="spinner"></div>
+            <div class="loading-text">
+                🤖 AI กำลังสร้าง Quiz ให้คุณ<span class="loading-dots"></span>
+            </div>
+            <div class="loading-tips" id="loading-tips">
+                💡 รู้ไหม? การทำ Quiz ช่วยให้จำเนื้อหาได้ดีขึ้น 50%!
+            </div>
+        </div>
+
+        <!-- Feature Chips -->
+        <div class="features-row" id="features-row">
+            <div class="feature-chip">
+                <span class="chip-icon">🧠</span> AI วิเคราะห์จุดอ่อน
+            </div>
+            <div class="feature-chip">
+                <span class="chip-icon">🎮</span> เรียนแบบเกม
+            </div>
+            <div class="feature-chip">
+                <span class="chip-icon">📊</span> สรุปผลละเอียด
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCREEN 2: QUIZ ===== -->
+    <div id="screen-quiz" class="screen">
+        <div class="quiz-nav-row">
+            <button class="btn-back" id="btn-back" onclick="goBack()" disabled>
+                ◀ ย้อนกลับ
+            </button>
+            <button class="btn-forward hidden" id="btn-forward" onclick="goForward()">
+                ข้อถัดไป ▶
+            </button>
+        </div>
+
+        <div class="quiz-header">
+            <div class="quiz-progress-info">
+                <span class="quiz-counter" id="quiz-counter">ข้อ 1 / 10</span>
+                <span class="quiz-score-live" id="quiz-score-live">⭐ 0 คะแนน</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill" style="width: 10%"></div>
+            </div>
+        </div>
+
+        <div class="review-badge" id="review-badge">👁️ โหมดดูย้อนหลัง — เฉลยข้อนี้แล้ว</div>
+
+        <div class="question-card">
+            <div class="question-number-badge" id="question-badge">❓ ข้อที่ 1</div>
+            <p class="question-text" id="question-text"></p>
+        </div>
+
+        <div class="choices-container" id="choices-container"></div>
+
+        <div class="feedback-toast" id="feedback-toast"></div>
+    </div>
+
+    <!-- ===== SCREEN 3: RESULT ===== -->
+    <div id="screen-result" class="screen">
+        <div class="result-card">
+            <span class="trophy-icon" id="trophy-icon">🏆</span>
+            <h2 class="result-title">🎉 ยอดเยี่ยมมาก!</h2>
+            <div class="result-score" id="result-score">0 / 10</div>
+            <p class="result-subtitle" id="result-subtitle">คะแนน</p>
+
+            <div class="stars-row" id="stars-row"></div>
+
+            <div class="stat-row">
+                <div class="stat-item">
+                    <span class="stat-value correct-stat" id="stat-correct">0</span>
+                    <span class="stat-label">ตอบถูก ✅</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value wrong-stat" id="stat-wrong">0</span>
+                    <span class="stat-label">ตอบผิด ❌</span>
+                </div>
+            </div>
+
+            <div class="ai-feedback-box">
+                <div class="ai-feedback-title">🤖 AI Insight</div>
+                <p class="ai-feedback-text" id="ai-feedback-text"></p>
+            </div>
+
+            <button class="btn-secondary" onclick="resetApp()">
+                🔄 กลับหน้าแรก
+            </button>
+        </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <!-- Browser Back Confirmation Modal -->
+    <div class="back-modal-overlay" id="back-modal">
+        <div class="back-modal">
+            <div class="back-modal-icon">⚠️</div>
+            <div class="back-modal-title">จะออกจาก Quiz เหรอ?</div>
+            <p class="back-modal-text">ถ้าออกตอนนี้ ความคืบหน้าจะหายไปนะ<br>อยากทำต่อหรือออกเลย?</p>
+            <div class="back-modal-buttons">
+                <button class="btn-modal-leave" onclick="confirmLeave()">ออกเลย</button>
+                <button class="btn-modal-stay" onclick="cancelLeave()">ทำต่อ!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
